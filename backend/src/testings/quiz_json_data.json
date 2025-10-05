@@ -1,0 +1,534 @@
+[
+  {
+    "title": "JavaScript Basics",
+    "description": "Test your knowledge on JS fundamentals",
+    "category": "Programming",
+    "subcategory": "JavaScript",
+    "difficulty": "easy",
+    "studyMaterial": {
+      "content": "## JS Basics\nVariables, Functions, Loops",
+      "readingTime": 15,
+      "keyPoints": ["Variables", "Functions", "Loops"],
+      "resources": [
+        {
+          "title": "MDN JS Guide",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
+          "type": "article"
+        },
+        {
+          "title": "JS Crash Course",
+          "url": "https://www.youtube.com/watch?v=hdI2bqOjy3c",
+          "type": "video"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "type": "mcq",
+        "question": "Which of the following is a JavaScript data type?",
+        "options": ["String", "Boolean", "Number", "All of the above"],
+        "correctAnswer": "All of the above",
+        "explanation": "JS supports String, Boolean, Number and more.",
+        "difficulty": "easy",
+        "points": 10,
+        "tags": ["basics", "datatype"],
+        "hint": "Check the JS documentation."
+      },
+      {
+        "type": "boolean",
+        "question": "JavaScript is a statically typed language.",
+        "correctAnswer": "False",
+        "explanation": "JS is dynamically typed.",
+        "difficulty": "easy",
+        "points": 5,
+        "tags": ["basics", "types"]
+      }
+    ],
+    "settings": {
+      "timeLimit": 300,
+      "timePerQuestion": 60,
+      "shuffleQuestions": true,
+      "shuffleOptions": true,
+      "showExplanations": true,
+      "passingScore": 60,
+      "attemptsAllowed": 3,
+      "isPublic": true
+    },
+    "tags": ["JavaScript", "Programming", "Basics"],
+    "thumbnail": "https://example.com/thumbnail.jpg"
+  },
+  {
+    "title": "World Geography",
+    "description": "Test your knowledge about countries and capitals.",
+    "category": "Geography",
+    "subcategory": "World",
+    "difficulty": "medium",
+    "studyMaterial": {
+      "content": "## Geography Basics\nCountries, Capitals, Continents",
+      "readingTime": 20,
+      "keyPoints": ["Countries", "Capitals", "Continents"],
+      "resources": [
+        {
+          "title": "World Atlas",
+          "url": "https://www.worldatlas.com",
+          "type": "article"
+        },
+        {
+          "title": "Geography Quiz",
+          "url": "https://www.youtube.com/watch?v=examplegeo",
+          "type": "video"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "type": "mcq",
+        "question": "What is the capital of Canada?",
+        "options": ["Toronto", "Ottawa", "Montreal", "Vancouver"],
+        "correctAnswer": "Ottawa",
+        "explanation": "Ottawa is the capital city of Canada.",
+        "difficulty": "medium",
+        "points": 10,
+        "tags": ["capitals", "countries"]
+      },
+      {
+        "type": "boolean",
+        "question": "Australia is both a country and a continent.",
+        "correctAnswer": "True",
+        "explanation": "Australia is considered both a country and a continent.",
+        "difficulty": "medium",
+        "points": 5,
+        "tags": ["continents", "facts"]
+      }
+    ],
+    "settings": {
+      "timeLimit": 400,
+      "shuffleQuestions": true,
+      "showExplanations": true
+    },
+    "tags": ["Geography", "World", "Capitals"],
+    "thumbnail": "https://example.com/geo.jpg"
+  },
+  {
+    "title": "Basic Physics",
+    "description": "Fundamentals of classical mechanics",
+    "category": "Science",
+    "subcategory": "Physics",
+    "difficulty": "easy",
+    "studyMaterial": {
+      "content": "## Physics Basics\nNewton's Laws, Motion, Forces",
+      "readingTime": 25,
+      "keyPoints": ["Newton's Laws", "Forces", "Motion"],
+      "resources": [
+        {
+          "title": "Physics Classroom",
+          "url": "https://www.physicsclassroom.com",
+          "type": "article"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "type": "mcq",
+        "question": "What is Newton's First Law about?",
+        "options": ["Gravity", "Inertia", "Energy", "Momentum"],
+        "correctAnswer": "Inertia",
+        "explanation": "Newton's First Law states that an object remains at rest or in uniform motion unless acted upon by a force.",
+        "difficulty": "easy",
+        "points": 10,
+        "tags": ["physics", "laws"]
+      }
+    ],
+    "settings": {
+      "timeLimit": 300,
+      "shuffleQuestions": true
+    },
+    "tags": ["Physics", "Science", "Mechanics"],
+    "thumbnail": "https://example.com/physics.jpg"
+  },
+  {
+    "title": "History of Ancient Egypt",
+    "description": "Pyramids, pharaohs and ancient culture.",
+    "category": "History",
+    "subcategory": "Ancient",
+    "difficulty": "medium",
+    "studyMaterial": {
+      "content": "## Ancient Egypt\nPharaohs, Pyramids, Culture",
+      "readingTime": 30,
+      "keyPoints": ["Pharaohs", "Pyramids", "Culture"],
+      "resources": [
+        {
+          "title": "Ancient Egypt",
+          "url": "https://www.history.com/topics/ancient-egypt",
+          "type": "article"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "type": "mcq",
+        "question": "Who was the last Pharaoh of Egypt?",
+        "options": ["Tutankhamun", "Cleopatra", "Ramses II", "Akhenaten"],
+        "correctAnswer": "Cleopatra",
+        "explanation": "Cleopatra VII was the last active ruler of the Ptolemaic Kingdom of Egypt.",
+        "difficulty": "medium",
+        "points": 10
+      }
+    ],
+    "settings": {
+      "timeLimit": 400
+    },
+    "tags": ["History", "Ancient Egypt"],
+    "thumbnail": "https://example.com/egypt.jpg"
+  },
+  {
+    "title": "World Capitals Quiz",
+    "description": "Challenge yourself with capitals of the world",
+    "category": "Geography",
+    "subcategory": "World",
+    "difficulty": "hard",
+    "studyMaterial": {
+      "content": "## Capitals Around the World",
+      "readingTime": 20,
+      "keyPoints": ["Major Capitals", "Continents", "Countries"],
+      "resources": [
+        {
+          "title": "World Capitals Map",
+          "url": "https://www.worldatlas.com/maps/world-capitals",
+          "type": "article"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "type": "mcq",
+        "question": "What is the capital of Brazil?",
+        "options": ["Rio de Janeiro", "Brasília", "São Paulo", "Salvador"],
+        "correctAnswer": "Brasília",
+        "explanation": "Brasília is the capital of Brazil.",
+        "difficulty": "hard",
+        "points": 15
+      }
+    ],
+    "settings": {
+      "timeLimit": 500
+    },
+    "tags": ["Geography", "Capitals"],
+    "thumbnail": "https://example.com/brazil.jpg"
+  },
+  {
+    "title": "Basic Chemistry",
+    "description": "Atoms, molecules, and chemical reactions",
+    "category": "Science",
+    "subcategory": "Chemistry",
+    "difficulty": "easy",
+    "studyMaterial": {
+      "content": "## Chemistry Basics\nAtoms, Elements, Compounds",
+      "readingTime": 20,
+      "keyPoints": ["Atoms", "Elements", "Compounds"],
+      "resources": [
+        {
+          "title": "Chemistry Guide",
+          "url": "https://www.chemguide.co.uk",
+          "type": "article"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "type": "mcq",
+        "question": "What is the chemical symbol for water?",
+        "options": ["O2", "H2O", "CO2", "HO2"],
+        "correctAnswer": "H2O",
+        "explanation": "Water is H2O.",
+        "difficulty": "easy",
+        "points": 10
+      }
+    ],
+    "settings": {
+      "timeLimit": 300
+    },
+    "tags": ["Chemistry", "Science"],
+    "thumbnail": "https://example.com/chem.jpg"
+  },
+  {
+    "title": "World War II",
+    "description": "Major events of the Second World War",
+    "category": "History",
+    "subcategory": "Modern",
+    "difficulty": "hard",
+    "studyMaterial": {
+      "content": "## WWII Overview\nCauses, Battles, Outcomes",
+      "readingTime": 35,
+      "keyPoints": ["Causes", "Major Battles", "Outcomes"],
+      "resources": [
+        {
+          "title": "WWII History",
+          "url": "https://www.history.com/topics/world-war-ii",
+          "type": "article"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "type": "mcq",
+        "question": "Which year did World War II end?",
+        "options": ["1940", "1945", "1939", "1944"],
+        "correctAnswer": "1945",
+        "explanation": "World War II ended in 1945.",
+        "difficulty": "hard",
+        "points": 15
+      }
+    ],
+    "settings": {
+      "timeLimit": 600
+    },
+    "tags": ["History", "WWII"],
+    "thumbnail": "https://example.com/ww2.jpg"
+  },
+  {
+    "title": "Basketball Rules",
+    "description": "Learn about NBA and FIBA rules",
+    "category": "Sports",
+    "subcategory": "Basketball",
+    "difficulty": "easy",
+    "studyMaterial": {
+      "content": "## Basketball Basics\nRules, Positions, Scoring",
+      "readingTime": 15,
+      "keyPoints": ["Rules", "Positions", "Scoring"],
+      "resources": [
+        {
+          "title": "NBA Rules",
+          "url": "https://official.nba.com/rulebook",
+          "type": "article"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "type": "mcq",
+        "question": "How many points is a free throw worth?",
+        "options": ["1", "2", "3", "0"],
+        "correctAnswer": "1",
+        "explanation": "A free throw is worth 1 point.",
+        "difficulty": "easy",
+        "points": 5
+      }
+    ],
+    "settings": {
+      "timeLimit": 200
+    },
+    "tags": ["Sports", "Basketball"],
+    "thumbnail": "https://example.com/basketball.jpg"
+  },
+  {
+    "title": "Movie Trivia",
+    "description": "Test your knowledge on famous movies",
+    "category": "Entertainment",
+    "subcategory": "Movies",
+    "difficulty": "medium",
+    "studyMaterial": {
+      "content": "## Movies\nGenres, Directors, Awards",
+      "readingTime": 20,
+      "keyPoints": ["Genres", "Directors", "Awards"],
+      "resources": [
+        {
+          "title": "IMDB Top Movies",
+          "url": "https://www.imdb.com/chart/top",
+          "type": "article"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "type": "mcq",
+        "question": "Which movie won the Best Picture Oscar in 1994?",
+        "options": ["Forrest Gump", "Pulp Fiction", "The Shawshank Redemption", "Speed"],
+        "correctAnswer": "Forrest Gump",
+        "explanation": "Forrest Gump won Best Picture in 1994.",
+        "difficulty": "medium",
+        "points": 10
+      }
+    ],
+    "settings": {
+      "timeLimit": 400
+    },
+    "tags": ["Movies", "Entertainment"],
+    "thumbnail": "https://example.com/movies.jpg"
+  },
+  {
+    "title": "Human Anatomy",
+    "description": "Basic human body structure",
+    "category": "Science",
+    "subcategory": "Biology",
+    "difficulty": "medium",
+    "studyMaterial": {
+      "content": "## Anatomy\nOrgans, Systems, Functions",
+      "readingTime": 25,
+      "keyPoints": ["Organs", "Systems", "Functions"],
+      "resources": [
+        {
+          "title": "Human Anatomy Guide",
+          "url": "https://www.visiblebody.com",
+          "type": "article"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "type": "mcq",
+        "question": "Which organ pumps blood throughout the body?",
+        "options": ["Liver", "Heart", "Lungs", "Kidneys"],
+        "correctAnswer": "Heart",
+        "explanation": "The heart pumps blood.",
+        "difficulty": "medium",
+        "points": 10
+      }
+    ],
+    "settings": {
+      "timeLimit": 400
+    },
+    "tags": ["Biology", "Science", "Anatomy"],
+    "thumbnail": "https://example.com/anatomy.jpg"
+  },
+  {
+    "title": "English Grammar Basics",
+    "description": "Tenses, nouns, and verbs",
+    "category": "Language",
+    "subcategory": "English",
+    "difficulty": "easy",
+    "studyMaterial": {
+      "content": "## Grammar\nNouns, Verbs, Tenses",
+      "readingTime": 15,
+      "keyPoints": ["Nouns", "Verbs", "Tenses"],
+      "resources": [
+        {
+          "title": "English Grammar Guide",
+          "url": "https://www.ef.com/english-resources/english-grammar/",
+          "type": "article"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "type": "mcq",
+        "question": "Which of these is a verb?",
+        "options": ["Run", "Table", "Happy", "Quickly"],
+        "correctAnswer": "Run",
+        "explanation": "Run is a verb.",
+        "difficulty": "easy",
+        "points": 5
+      }
+    ],
+    "settings": {
+      "timeLimit": 200
+    },
+    "tags": ["English", "Grammar", "Language"],
+    "thumbnail": "https://example.com/english.jpg"
+  },
+  {
+    "title": "Astronomy Quiz",
+    "description": "Planets, stars, and galaxies",
+    "category": "Science",
+    "subcategory": "Astronomy",
+    "difficulty": "medium",
+    "studyMaterial": {
+      "content": "## Astronomy\nPlanets, Stars, Galaxies",
+      "readingTime": 30,
+      "keyPoints": ["Planets", "Stars", "Galaxies"],
+      "resources": [
+        {
+          "title": "NASA Astronomy",
+          "url": "https://www.nasa.gov/subjects/space",
+          "type": "article"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "type": "mcq",
+        "question": "Which planet is known as the Red Planet?",
+        "options": ["Mars", "Jupiter", "Venus", "Saturn"],
+        "correctAnswer": "Mars",
+        "explanation": "Mars is called the Red Planet.",
+        "difficulty": "medium",
+        "points": 10
+      }
+    ],
+    "settings": {
+      "timeLimit": 400
+    },
+    "tags": ["Astronomy", "Science", "Space"],
+    "thumbnail": "https://example.com/space.jpg"
+  },
+  {
+    "title": "World Flags",
+    "description": "Recognize flags of different countries",
+    "category": "Geography",
+    "subcategory": "Flags",
+    "difficulty": "easy",
+    "studyMaterial": {
+      "content": "## Flags\nCountries, Symbols, Colors",
+      "readingTime": 15,
+      "keyPoints": ["Countries", "Symbols", "Colors"],
+      "resources": [
+        {
+          "title": "Flagpedia",
+          "url": "https://www.flagpedia.net",
+          "type": "article"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "type": "mcq",
+        "question": "Which country's flag has a red circle on a white background?",
+        "options": ["Japan", "Bangladesh", "Turkey", "Switzerland"],
+        "correctAnswer": "Japan",
+        "explanation": "Japan's flag has a red circle on a white background.",
+        "difficulty": "easy",
+        "points": 5
+      }
+    ],
+    "settings": {
+      "timeLimit": 200
+    },
+    "tags": ["Flags", "Countries", "Geography"],
+    "thumbnail": "https://example.com/flags.jpg"
+  },
+  {
+    "title": "Basic Music Theory",
+    "description": "Notes, scales, and rhythm",
+    "category": "Music",
+    "subcategory": "Theory",
+    "difficulty": "easy",
+    "studyMaterial": {
+      "content": "## Music Basics\nNotes, Scales, Rhythm",
+      "readingTime": 20,
+      "keyPoints": ["Notes", "Scales", "Rhythm"],
+      "resources": [
+        {
+          "title": "Music Theory Basics",
+          "url": "https://www.musictheory.net/lessons",
+          "type": "article"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "type": "mcq",
+        "question": "How many notes are there in a standard octave?",
+        "options": ["6", "7", "8", "12"],
+        "correctAnswer": "7",
+        "explanation": "A standard octave has 7 notes.",
+        "difficulty": "easy",
+        "points": 5
+      }
+    ],
+    "settings": {
+      "timeLimit": 300
+    },
+    "tags": ["Music", "Theory", "Basics"],
+    "thumbnail": "https://example.com/music.jpg"
+  }
+]

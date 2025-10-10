@@ -1,10 +1,11 @@
 import React from 'react';
 import { BookOpen, Plus, Search, Clock, Users } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { quizzes } from '../data/mockData';
+import { useQuiz } from '../context/QuizContext';
 
 const QuizzesPage = () => {
   const { setCurrentPage, setSelectedQuiz } = useApp();
+  const { quizzes, loading } = useQuiz();
 
   return (
     <div className="flex-1 overflow-auto">
@@ -45,8 +46,14 @@ const QuizzesPage = () => {
           </div>
 
           <div className="space-y-4">
-            {quizzes.map(quiz => (
-              <div key={quiz.id} className="flex items-center justify-between p-4 bg-gray-900 rounded-lg border border-gray-700 hover:border-purple-500 transition-colors">
+            {loading && (
+              <div className="text-gray-400">Loading quizzes...</div>
+            )}
+            {!loading && quizzes.length === 0 && (
+              <div className="text-gray-400">No quizzes found.</div>
+            )}
+            {!loading && quizzes.map((quiz) => (
+              <div key={quiz._id || quiz.id} className="flex items-center justify-between p-4 bg-gray-900 rounded-lg border border-gray-700 hover:border-purple-500 transition-colors">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
                     <BookOpen className="text-purple-400" size={24} />
@@ -55,36 +62,36 @@ const QuizzesPage = () => {
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="text-white font-semibold">{quiz.title}</h3>
                       <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                        quiz.status === 'Published' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
+                        (quiz.status || 'published') === 'published' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
                       }`}>
-                        {quiz.status}
+                        {(quiz.status || 'published')}
                       </span>
                     </div>
                     <div className="flex items-center gap-4 text-sm text-gray-400">
                       <span className="flex items-center gap-1">
                         <BookOpen size={14} />
-                        {quiz.questions} questions
+                        {(quiz.questions?.length || 0)} questions
                       </span>
                       <span className="flex items-center gap-1">
                         <Clock size={14} />
-                        {quiz.time}
+                        {quiz.settings?.timeLimit ? `${quiz.settings.timeLimit} min` : '—'}
                       </span>
                       <span className="flex items-center gap-1">
                         <Users size={14} />
-                        {quiz.completions} completions
+                        {quiz.stats?.totalAttempts || 0} completions
                       </span>
-                      <span className="text-gray-500">Created just now</span>
+                      <span className="text-gray-500 capitalize">{quiz.category}</span>
                     </div>
                   </div>
                 </div>
-                <button 
+                <button
                   onClick={() => {
                     setSelectedQuiz(quiz);
                     setCurrentPage('quiz-detail');
                   }}
                   className="px-6 py-2 bg-gray-700 text-white rounded-lg font-medium hover:bg-gray-600"
                 >
-                  View
+                  View & Attempt Quiz
                 </button>
               </div>
             ))}

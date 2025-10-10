@@ -15,8 +15,7 @@ export const QuizProvider = ({ children }) => {
       try {
         setLoading(true);
         const data = await getMannualQuizzes(pageCount, pageLimit);
-        console.log(data);
-        // setQuizzes(data?.quizzes || []);
+        setQuizzes(data?.quizzes || []);
       } catch (err) {
         console.error("Failed to fetch quizzes:", err);
       } finally {

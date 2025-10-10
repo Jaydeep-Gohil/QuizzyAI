@@ -3,7 +3,7 @@ import { ChevronRight, BookOpen, Clock, Users, Award } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 const QuizDetailPage = () => {
-  const { setCurrentPage, setQuizStarted, setCurrentQuestion } = useApp();
+  const { setCurrentPage, setQuizStarted, setCurrentQuestion, selectedQuiz } = useApp();
 
   return (
     <div className="flex-1 overflow-auto">
@@ -15,8 +15,8 @@ const QuizDetailPage = () => {
 
         <div className="flex justify-between items-start mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Introduction to Biology</h1>
-            <p className="text-gray-400">Basic concepts of biology for beginners</p>
+            <h1 className="text-3xl font-bold text-white mb-2">{selectedQuiz?.title || 'Quiz Details'}</h1>
+            <p className="text-gray-400">{selectedQuiz?.description || 'Explore the quiz details and get started.'}</p>
           </div>
           <div className="flex gap-3">
             <button className="px-6 py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-600 flex items-center gap-2">
@@ -44,58 +44,70 @@ const QuizDetailPage = () => {
               <span className="text-gray-400 text-sm">Total Completions</span>
               <BookOpen className="text-purple-400" size={24} />
             </div>
-            <div className="text-3xl font-bold text-white">28</div>
+              <div className="text-3xl font-bold text-white">{selectedQuiz?.stats?.totalAttempts ?? 0}</div>
           </div>
           <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-400 text-sm">Completion Time</span>
               <Clock className="text-green-400" size={24} />
             </div>
-            <div className="text-3xl font-bold text-white">12:45</div>
+              <div className="text-3xl font-bold text-white">{selectedQuiz?.settings?.timeLimit ? `${selectedQuiz.settings.timeLimit} min` : '—'}</div>
           </div>
           <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-400 text-sm">Average Score</span>
               <Users className="text-blue-400" size={24} />
             </div>
-            <div className="text-3xl font-bold text-white">78.5%</div>
+              <div className="text-3xl font-bold text-white">{selectedQuiz?.stats?.averageScore ? `${selectedQuiz.stats.averageScore}%` : '—'}</div>
           </div>
           <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-400 text-sm">Top Score</span>
               <Award className="text-orange-400" size={24} />
             </div>
-            <div className="text-3xl font-bold text-white">95%</div>
+              <div className="text-3xl font-bold text-white">{selectedQuiz?.stats?.rating ? `${selectedQuiz.stats.rating}%` : '—'}</div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 bg-gray-800 rounded-xl p-6 border border-gray-700">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-white">Recent Completions</h2>
-              <button className="text-purple-400 text-sm font-medium hover:text-purple-300">View All Results</button>
+              <h2 className="text-xl font-bold text-white">Study Material</h2>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-left text-gray-400 text-sm border-b border-gray-700">
-                    <th className="pb-3 font-medium">Student</th>
-                    <th className="pb-3 font-medium">Score</th>
-                    <th className="pb-3 font-medium">Time Spent</th>
-                    <th className="pb-3 font-medium">Completed</th>
-                  </tr>
-                </thead>
-                <tbody className="text-gray-300">
-                  {['Alex Johnson', 'Emma Wilson', 'Michael Cohen', 'Sophia Garcia'].map((name, i) => (
-                    <tr key={i} className="border-b border-gray-700/50">
-                      <td className="py-4">{name}</td>
-                      <td className="py-4 text-white font-semibold">{[85, 92, 92, 92][i]}%</td>
-                      <td className="py-4">{['15:24', '18:24', '18:24', '18:24'][i]}</td>
-                      <td className="py-4 text-gray-400">2 hours ago</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="space-y-4">
+              {selectedQuiz?.studyMaterial?.readingTime ? (
+                <div className="text-sm text-gray-400">Estimated reading time: <span className="text-white font-medium">{selectedQuiz.studyMaterial.readingTime} min</span></div>
+              ) : null}
+              {selectedQuiz?.studyMaterial?.content ? (
+                <div className="prose prose-invert max-w-none text-gray-200 whitespace-pre-wrap">{selectedQuiz.studyMaterial.content}</div>
+              ) : (
+                <div className="text-gray-400">No study material provided.</div>
+              )}
+              {selectedQuiz?.studyMaterial?.keyPoints?.length ? (
+                <div>
+                  <h3 className="text-white font-semibold mb-2">Key Points</h3>
+                  <ul className="list-disc list-inside text-gray-300 space-y-1">
+                    {selectedQuiz.studyMaterial.keyPoints.map((point, idx) => (
+                      <li key={idx}>{point}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+              {selectedQuiz?.studyMaterial?.resources?.length ? (
+                <div>
+                  <h3 className="text-white font-semibold mb-2">Resources</h3>
+                  <ul className="space-y-1">
+                    {selectedQuiz.studyMaterial.resources.map((res, idx) => (
+                      <li key={idx}>
+                        <a href={res.url} target="_blank" rel="noreferrer" className="text-purple-400 hover:text-purple-300">
+                          {res.title || res.url}
+                        </a>
+                        {res.type ? <span className="ml-2 text-xs text-gray-500">({res.type})</span> : null}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
             </div>
           </div>
 

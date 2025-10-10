@@ -2,12 +2,15 @@ import express from "express";
 import { protect } from "../middlewares/auth.middleware.js";
 import {
   createManualQuiz,
-  createAIQuiz,
   getQuiz,
   updateQuiz,
   deleteQuiz,
   getQuizzes,
 } from "../controllers/quiz.controller.js";
+import {
+  createAIQuiz,
+  getAIQuize,
+} from "../controllers/gemini.quiz.controller.js";
 
 const quizRouter = express.Router();
 
@@ -20,12 +23,13 @@ quizRouter.use(protect);
 // Manual quiz creation
 quizRouter.post("/manual", createManualQuiz);
 
-// AI quiz creation
-quizRouter.post("/ai", createAIQuiz);
-
 // Get, update, delete by ID
 quizRouter.get("/:id", getQuiz);
 quizRouter.put("/:id", protect, updateQuiz);
 quizRouter.delete("/:id", protect, deleteQuiz);
+
+//gemini routes
+quizRouter.post("/gemini/create", createAIQuiz);
+quizRouter.get("/gemini/get", getAIQuize);
 
 export default quizRouter;

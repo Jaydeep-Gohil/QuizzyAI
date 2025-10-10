@@ -24,23 +24,6 @@ export const createManualQuiz = asyncHandler(async (req, res) => {
   return successResponse(res, 201, quiz, "Manual quiz created successfully");
 });
 
-// Create quiz (AI generated)
-export const createAIQuiz = asyncHandler(async (req, res) => {
-  const quizData = { ...req.body, isAI: true, createdBy: req.user._id };
-
-  if (!quizData.aiGenerationData?.prompt) {
-    return errorResponse(res, 400, "AI prompt is required to generate quiz");
-  }
-
-  const quiz = await createQuiz(quizData);
-  return successResponse(
-    res,
-    201,
-    quiz,
-    "AI generated quiz created successfully"
-  );
-});
-
 // Get quiz by ID
 export const getQuiz = asyncHandler(async (req, res) => {
   const quiz = await findQuizById(req.params.id);

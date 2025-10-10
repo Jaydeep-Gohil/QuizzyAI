@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import connectDB from "./src/config/db.js";
 import userRoutes from "./src/routes/user.routes.js";
 import publicRoutes from "./src/routes/public.routes.js";
@@ -12,6 +14,15 @@ dotenv.config();
 connectDB();
 
 const app = express();
+
+app.use(helmet());
+
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 300,
+  message: "Too many requests from this IP, please try again later.",
+});
+app.use(limiter);
 
 // Middleware
 app.use(

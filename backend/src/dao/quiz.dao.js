@@ -58,3 +58,26 @@ export const listQuizzes = async ({ page = 1, limit = 10, ...filters }) => {
     quizzes: quizzes.map((q) => q.toObject()),
   };
 };
+
+// Fetch only AI-generated quizzes
+export const listAIQuizzes = async ({ page = 1, limit = 10, ...filters }) => {
+  const skip = (page - 1) * limit;
+
+  // Always include AI filter
+  const query = { ...filters, isAI: true };
+
+  const total = await Quiz.countDocuments(query);
+
+  const quizzes = await Quiz.find(query)
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(Number(limit));
+
+  return {
+    total,
+    page: Number(page),
+    limit: Number(limit),
+    totalPages: Math.ceil(total / limit),
+    quizzes: quizzes.map((q) => q.toObject()),
+  };
+};

@@ -31,5 +31,9 @@ app.use("/api/quizzes", quizRoutes);
 // Error handler
 app.use(errorHandler);
 
+app.get("/", (req, res) => {
+  res.send("API server is working on root route");
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

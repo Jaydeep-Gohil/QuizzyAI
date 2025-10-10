@@ -1,17 +1,17 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState } from "react";
 
 const AppContext = createContext();
 
 export const useApp = () => {
   const context = useContext(AppContext);
   if (!context) {
-    throw new Error('useApp must be used within an AppProvider');
+    throw new Error("useApp must be used within an AppProvider");
   }
   return context;
 };
 
 export const AppProvider = ({ children }) => {
-  const [currentPage, setCurrentPage] = useState('landing');
+  const [currentPage, setCurrentPage] = useState("landing");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
@@ -30,12 +30,8 @@ export const AppProvider = ({ children }) => {
     currentQuestion,
     setCurrentQuestion,
     quizStarted,
-    setQuizStarted
+    setQuizStarted,
   };
 
-  return (
-    <AppContext.Provider value={value}>
-      {children}
-    </AppContext.Provider>
-  );
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

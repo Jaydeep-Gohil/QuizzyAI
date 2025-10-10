@@ -6,6 +6,7 @@ import {
   updateQuizById,
   deleteQuizById,
   listQuizzes,
+  getQuizStatistics
 } from "../dao/quiz.dao.js";
 
 // Create quiz (manual)
@@ -93,4 +94,25 @@ export const getQuizzes = asyncHandler(async (req, res) => {
   }
 
   return successResponse(res, 200, result, "Quizzes listed successfully");
+});
+
+// Get quiz statistics
+export const getQuizStats = asyncHandler(async (req, res) => {
+  const { quizId } = req.params;
+  
+  console.log(`📊 Fetching statistics for quiz: ${quizId}`);
+  
+  try {
+    const stats = await getQuizStatistics(quizId);
+    
+    return successResponse(
+      res,
+      200,
+      stats,
+      "Quiz statistics fetched successfully"
+    );
+  } catch (error) {
+    console.error("❌ Error fetching quiz statistics:", error);
+    return errorResponse(res, 500, error.message);
+  }
 });

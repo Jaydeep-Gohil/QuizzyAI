@@ -1,11 +1,25 @@
 import React from 'react';
-import { ChevronRight, BookOpen, Clock, Users, Award } from 'lucide-react';
+import { ChevronRight, BookOpen, Clock, Users, Award, Play } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { useQuiz } from '../context/QuizContext';
 
 const QuizDetailPage = () => {
-  const { setQuizStarted, setCurrentQuestion, selectedQuiz } = useApp();
+  const { selectedQuiz } = useApp();
+  const { startQuiz, loading } = useQuiz();
   const navigate = useNavigate();
+
+  const handleStartQuiz = async () => {
+    if (!selectedQuiz) return;
+    
+    try {
+      await startQuiz(selectedQuiz);
+      navigate('/take-quiz');
+    } catch (error) {
+      console.error('Failed to start quiz:', error);
+      // Handle error (show toast, etc.)
+    }
+  };
 
   return (
     <div className="flex-1 overflow-auto">
@@ -28,14 +42,12 @@ const QuizDetailPage = () => {
               Share
             </button>
             <button 
-              onClick={() => {
-                setQuizStarted(true);
-                setCurrentQuestion(0);
-                navigate('/take-quiz');
-              }}
-              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90"
+              onClick={handleStartQuiz}
+              disabled={loading}
+              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90 flex items-center gap-2 disabled:opacity-50"
             >
-              Preview
+              <Play size={20} />
+              {loading ? 'Starting...' : 'Start Quiz'}
             </button>
           </div>
         </div>
@@ -43,105 +55,117 @@ const QuizDetailPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-400 text-sm">Total Completions</span>
+              <span className="text-gray-400 text-sm">Total Questions</span>
               <BookOpen className="text-purple-400" size={24} />
             </div>
-              <div className="text-3xl font-bold text-white">{selectedQuiz?.stats?.totalAttempts ?? 0}</div>
+            <div className="text-3xl font-bold text-white">{selectedQuiz?.questions?.length || 0}</div>
           </div>
           <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-400 text-sm">Completion Time</span>
+              <span className="text-gray-400 text-sm">Time Limit</span>
               <Clock className="text-green-400" size={24} />
             </div>
-              <div className="text-3xl font-bold text-white">{selectedQuiz?.settings?.timeLimit ? `${selectedQuiz.settings.timeLimit} min` : '—'}</div>
+            <div className="text-3xl font-bold text-white">
+              {selectedQuiz?.settings?.timeLimit ? `${selectedQuiz.settings.timeLimit} min` : 'No limit'}
+            </div>
           </div>
           <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-400 text-sm">Average Score</span>
+              <span className="text-gray-400 text-sm">Difficulty</span>
               <Users className="text-blue-400" size={24} />
             </div>
-              <div className="text-3xl font-bold text-white">{selectedQuiz?.stats?.averageScore ? `${selectedQuiz.stats.averageScore}%` : '—'}</div>
+            <div className="text-3xl font-bold text-white capitalize">{selectedQuiz?.difficulty || 'Medium'}</div>
           </div>
           <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-400 text-sm">Top Score</span>
+              <span className="text-gray-400 text-sm">Passing Score</span>
               <Award className="text-orange-400" size={24} />
             </div>
-              <div className="text-3xl font-bold text-white">{selectedQuiz?.stats?.rating ? `${selectedQuiz.stats.rating}%` : '—'}</div>
+            <div className="text-3xl font-bold text-white">
+              {selectedQuiz?.settings?.passingScore ? `${selectedQuiz.settings.passingScore}%` : '60%'}
+            </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 bg-gray-800 rounded-xl p-6 border border-gray-700">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-white">Study Material</h2>
+              <h2 className="text-xl font-bold text-white">Quiz Information</h2>
             </div>
             <div className="space-y-4">
-              {selectedQuiz?.studyMaterial?.readingTime ? (
-                <div className="text-sm text-gray-400">Estimated reading time: <span className="text-white font-medium">{selectedQuiz.studyMaterial.readingTime} min</span></div>
-              ) : null}
-              {selectedQuiz?.studyMaterial?.content ? (
-                <div className="prose prose-invert max-w-none text-gray-200 whitespace-pre-wrap">{selectedQuiz.studyMaterial.content}</div>
-              ) : (
-                <div className="text-gray-400">No study material provided.</div>
-              )}
-              {selectedQuiz?.studyMaterial?.keyPoints?.length ? (
-                <div>
-                  <h3 className="text-white font-semibold mb-2">Key Points</h3>
-                  <ul className="list-disc list-inside text-gray-300 space-y-1">
-                    {selectedQuiz.studyMaterial.keyPoints.map((point, idx) => (
-                      <li key={idx}>{point}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-              {selectedQuiz?.studyMaterial?.resources?.length ? (
-                <div>
-                  <h3 className="text-white font-semibold mb-2">Resources</h3>
-                  <ul className="space-y-1">
-                    {selectedQuiz.studyMaterial.resources.map((res, idx) => (
-                      <li key={idx}>
-                        <a href={res.url} target="_blank" rel="noreferrer" className="text-purple-400 hover:text-purple-300">
-                          {res.title || res.url}
-                        </a>
-                        {res.type ? <span className="ml-2 text-xs text-gray-500">({res.type})</span> : null}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
+              <div>
+                <h3 className="text-white font-semibold mb-2">Category</h3>
+                <p className="text-gray-400 capitalize">{selectedQuiz?.category || 'General'}</p>
+              </div>
+              <div>
+                <h3 className="text-white font-semibold mb-2">Description</h3>
+                <p className="text-gray-400">{selectedQuiz?.description || 'No description provided.'}</p>
+              </div>
+              <div>
+                <h3 className="text-white font-semibold mb-2">Instructions</h3>
+                <ul className="text-gray-400 space-y-1">
+                  <li>• Read each question carefully</li>
+                  <li>• Select the best answer from the options</li>
+                  <li>• You can navigate between questions</li>
+                  <li>• Submit your answers when you're ready</li>
+                  {selectedQuiz?.settings?.timeLimit && (
+                    <li>• Time limit: {selectedQuiz.settings.timeLimit} minutes</li>
+                  )}
+                </ul>
+              </div>
             </div>
           </div>
 
           <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-            <h2 className="text-xl font-bold text-white mb-6">Question Performance</h2>
+            <h2 className="text-xl font-bold text-white mb-6">Quiz Statistics</h2>
             <div className="space-y-4">
-              {[
-                { q: 'What is the basic unit of life?', rate: 92 },
-                { q: 'Which organelle is responsible for...?', rate: 92 },
-                { q: 'What is the process of cell division...?', rate: 92 },
-                { q: 'Which of the following is NOT a...?', rate: 92 },
-                { q: 'What is the main function of mito...?', rate: 92 }
-              ].map((item, i) => (
-                <div key={i}>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-gray-300 text-sm">{i + 1}. {item.q}</span>
-                    <span className="text-white font-semibold text-sm">{item.rate}%</span>
-                  </div>
-                  <div className="bg-gray-700 rounded-full h-2">
-                    <div className="bg-purple-500 h-2 rounded-full" style={{width: `${item.rate}%`}}></div>
-                  </div>
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-gray-400 text-sm">Total Attempts</span>
+                  <span className="text-white font-semibold">{selectedQuiz?.stats?.totalAttempts || 0}</span>
                 </div>
-              ))}
+              </div>
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-gray-400 text-sm">Average Score</span>
+                  <span className="text-white font-semibold">
+                    {selectedQuiz?.stats?.averageScore ? `${selectedQuiz.stats.averageScore}%` : 'N/A'}
+                  </span>
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-gray-400 text-sm">Completion Rate</span>
+                  <span className="text-white font-semibold">
+                    {selectedQuiz?.stats?.completionRate ? `${selectedQuiz.stats.completionRate}%` : 'N/A'}
+                  </span>
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-gray-400 text-sm">Average Time</span>
+                  <span className="text-white font-semibold">
+                    {selectedQuiz?.stats?.averageTime ? `${Math.round(selectedQuiz.stats.averageTime / 60)} min` : 'N/A'}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <div className="mt-6 bg-gray-800 rounded-xl p-6 border border-gray-700">
-          <h2 className="text-xl font-bold text-white mb-4">Share This Quiz</h2>
-          <p className="text-gray-400 mb-4">Share this quiz with students or colleagues</p>
-          <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90 flex items-center gap-2">
-            Share Quiz
+          <h2 className="text-xl font-bold text-white mb-4">Ready to Start?</h2>
+          <p className="text-gray-400 mb-4">
+            This quiz contains {selectedQuiz?.questions?.length || 0} questions. 
+            {selectedQuiz?.settings?.timeLimit && ` You have ${selectedQuiz.settings.timeLimit} minutes to complete it.`}
+          </p>
+          <button 
+            onClick={handleStartQuiz}
+            disabled={loading}
+            className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90 flex items-center gap-2 disabled:opacity-50"
+          >
+            <Play size={20} />
+            {loading ? 'Starting Quiz...' : 'Start Quiz Now'}
           </button>
         </div>
       </div>

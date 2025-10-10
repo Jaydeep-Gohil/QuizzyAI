@@ -11,6 +11,8 @@ import Dashboard from "./pages/Dashboard";
 import QuizzesPage from "./pages/QuizzesPage";
 import QuizDetailPage from "./pages/QuizDetailPage";
 import TakeQuizPage from "./pages/TakeQuizPage";
+import QuizResultPage from "./pages/QuizResultPage";
+import ProfilePage from "./pages/ProfilePage";
 import EventsPage from "./pages/EventsPage";
 import StudentsPage from "./pages/StudentsPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -76,6 +78,20 @@ const AppContent = () => {
           <ProtectedRoute>
             <MainLayout>
               <TakeQuizPage />
+            </MainLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/quiz-result" element={
+          <ProtectedRoute>
+            <MainLayout>
+              <QuizResultPage />
+            </MainLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <MainLayout>
+              <ProfilePage />
             </MainLayout>
           </ProtectedRoute>
         } />

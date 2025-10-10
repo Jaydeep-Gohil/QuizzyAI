@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, BookOpen, Calendar, Users, Settings } from 'lucide-react';
+import { BarChart3, BookOpen, Calendar, Users, Settings, User } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import NavItem from './NavItem';
@@ -67,7 +67,17 @@ const Sidebar = () => {
         </nav>
 
         <div className="mt-8 pt-4 border-t border-gray-800">
-          <p className="text-gray-500 text-xs font-semibold mb-2 px-3">Manage</p>
+          <p className="text-gray-500 text-xs font-semibold mb-2 px-3">Account</p>
+          <NavLink to="/profile" className={({ isActive }) => 
+            `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              isActive 
+                ? 'bg-purple-600 text-white' 
+                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+            }`
+          }>
+            <User size={20} />
+            {sidebarOpen && <span>Profile</span>}
+          </NavLink>
           <NavLink to="/settings" className={({ isActive }) => 
             `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
               isActive 

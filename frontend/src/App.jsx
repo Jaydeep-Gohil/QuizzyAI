@@ -1,35 +1,53 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { AppProvider, useApp } from './context/AppContext';
+import Sidebar from './components/Sidebar';
+import Header from './components/Header';
+import LandingPage from './pages/LandingPage';
+import SignInPage from './pages/SignInPage';
+import SignUpPage from './pages/SignUpPage';
+import Dashboard from './pages/Dashboard';
+import QuizzesPage from './pages/QuizzesPage';
+import QuizDetailPage from './pages/QuizDetailPage';
+import TakeQuizPage from './pages/TakeQuizPage';
+import EventsPage from './pages/EventsPage';
+import StudentsPage from './pages/StudentsPage';
+import SettingsPage from './pages/SettingsPage';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+const AppContent = () => {
+  const { currentPage, isAuthenticated } = useApp();
 
+  // Render authentication pages
+  if (!isAuthenticated) {
+    if (currentPage === 'landing') return <LandingPage />;
+    if (currentPage === 'signin') return <SignInPage />;
+    if (currentPage === 'signup') return <SignUpPage />;
+  }
+
+  // Render main app with sidebar and header
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="min-h-screen bg-gray-900 flex">
+      <Sidebar />
+      <div className="flex-1 flex flex-col">
+        <Header />
+        {currentPage === 'dashboard' && <Dashboard />}
+        {currentPage === 'quizzes' && <QuizzesPage />}
+        {currentPage === 'quiz-detail' && <QuizDetailPage />}
+        {currentPage === 'take-quiz' && <TakeQuizPage />}
+        {currentPage === 'events' && <EventsPage />}
+        {currentPage === 'students' && <StudentsPage />}
+        {currentPage === 'settings' && <SettingsPage />}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    </div>
+  );
+};
 
-export default App
+const App = () => {
+  return (
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
+  );
+};
+
+export default App;

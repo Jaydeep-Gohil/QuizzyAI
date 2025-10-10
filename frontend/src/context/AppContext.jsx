@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { getMe, logout } from "../services/auth.service";
 
 const AppContext = createContext();
 
@@ -11,18 +12,41 @@ export const useApp = () => {
 };
 
 export const AppProvider = ({ children }) => {
-  const [currentPage, setCurrentPage] = useState("landing");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
 
+  useEffect(() => {
+    const bootstrap = async () => {
+      try {
+        const data = await getMe();
+        // backend success payload merges user fields at root, we ensure minimal shape
+        setCurrentUser(data);
+        setIsAuthenticated(true);
+      } catch (_err) {
+        setCurrentUser(null);
+        setIsAuthenticated(false);
+      }
+    };
+    bootstrap();
+  }, []);
+
+  const signOut = async () => {
+    try {
+      await logout();
+    } catch (_e) {}
+    setIsAuthenticated(false);
+    setCurrentUser(null);
+  };
+
   const value = {
-    currentPage,
-    setCurrentPage,
     isAuthenticated,
     setIsAuthenticated,
+    currentUser,
+    setCurrentUser,
     sidebarOpen,
     setSidebarOpen,
     selectedQuiz,
@@ -31,6 +55,7 @@ export const AppProvider = ({ children }) => {
     setCurrentQuestion,
     quizStarted,
     setQuizStarted,
+    signOut,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

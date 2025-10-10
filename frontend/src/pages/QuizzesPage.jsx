@@ -1,11 +1,13 @@
 import React from 'react';
 import { BookOpen, Plus, Search, Clock, Users } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { useQuiz } from '../context/QuizContext';
 
 const QuizzesPage = () => {
-  const { setCurrentPage, setSelectedQuiz } = useApp();
+  const { setSelectedQuiz } = useApp();
   const { quizzes, loading } = useQuiz();
+  const navigate = useNavigate();
 
   return (
     <div className="flex-1 overflow-auto">
@@ -87,7 +89,7 @@ const QuizzesPage = () => {
                 <button
                   onClick={() => {
                     setSelectedQuiz(quiz);
-                    setCurrentPage('quiz-detail');
+                    navigate('/quiz-detail');
                   }}
                   className="px-6 py-2 bg-gray-700 text-white rounded-lg font-medium hover:bg-gray-600"
                 >

@@ -1,17 +1,19 @@
 import React from 'react';
 import { X, Clock, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { sampleQuestions } from '../data/mockData';
 
 const TakeQuizPage = () => {
-  const { setCurrentPage, setQuizStarted } = useApp();
+  const { setQuizStarted } = useApp();
+  const navigate = useNavigate();
   const question = sampleQuestions[0];
   
   return (
     <div className="flex-1 bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900">
       <div className="max-w-6xl mx-auto p-8">
         <div className="flex justify-between items-center mb-8">
-          <button onClick={() => { setCurrentPage('quiz-detail'); setQuizStarted(false); }} className="text-gray-400 hover:text-white">
+          <button onClick={() => { navigate('/quiz-detail'); setQuizStarted(false); }} className="text-gray-400 hover:text-white">
             <X size={24} />
           </button>
           <h2 className="text-2xl font-bold text-white">Science & Technology Quiz</h2>

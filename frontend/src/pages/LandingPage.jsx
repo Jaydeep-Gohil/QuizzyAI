@@ -1,10 +1,12 @@
 import React from 'react';
 import { BookOpen, Award, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { categories } from '../data/mockData';
 
 const LandingPage = () => {
-  const { setCurrentPage, setIsAuthenticated } = useApp();
+  const { setIsAuthenticated } = useApp();
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
@@ -20,8 +22,8 @@ const LandingPage = () => {
           <a href="#" className="text-gray-300 hover:text-white">About</a>
         </div>
         <div className="flex gap-3">
-          <button onClick={() => setCurrentPage('signin')} className="px-4 py-2 text-white border border-purple-500 rounded-lg hover:bg-purple-500/10">Sign In</button>
-          <button onClick={() => setCurrentPage('signup')} className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:opacity-90">Register</button>
+          <button onClick={() => navigate('/signin')} className="px-4 py-2 text-white border border-purple-500 rounded-lg hover:bg-purple-500/10">Sign In</button>
+          <button onClick={() => navigate('/signup')} className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:opacity-90">Register</button>
         </div>
       </nav>
 
@@ -36,7 +38,7 @@ const LandingPage = () => {
           Join thousands of students and teachers on the ultimate quiz platform. Test your knowledge, compete with peers, and win exciting rewards
         </p>
         <div className="flex gap-4 justify-center mb-12">
-          <button onClick={() => { setIsAuthenticated(true); setCurrentPage('dashboard'); }} className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90">Get Started</button>
+          <button onClick={() => { setIsAuthenticated(true); navigate('/dashboard'); }} className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90">Get Started</button>
           <button className="px-8 py-4 bg-white text-gray-900 rounded-lg font-semibold hover:bg-gray-100">Explore Quizzes</button>
         </div>
         <div className="flex items-center gap-2 justify-center">
@@ -105,7 +107,7 @@ const LandingPage = () => {
           <h2 className="text-4xl font-bold text-white mb-4">Ready to Start Your Quiz Journey?</h2>
           <p className="text-purple-100 mb-8">Join thousands of students and teachers. Sign up today and get access to all features</p>
           <div className="flex gap-4 justify-center">
-            <button onClick={() => setCurrentPage('signup')} className="px-8 py-4 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100">Create Account</button>
+            <button onClick={() => navigate('/signup')} className="px-8 py-4 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100">Create Account</button>
             <button className="px-8 py-4 bg-purple-500/20 text-white rounded-lg font-semibold hover:bg-purple-500/30 border border-white/20">Explore Quizzes</button>
           </div>
         </div>

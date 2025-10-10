@@ -1,14 +1,16 @@
 import React from 'react';
 import { ChevronRight, BookOpen, Clock, Users, Award } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 const QuizDetailPage = () => {
-  const { setCurrentPage, setQuizStarted, setCurrentQuestion, selectedQuiz } = useApp();
+  const { setQuizStarted, setCurrentQuestion, selectedQuiz } = useApp();
+  const navigate = useNavigate();
 
   return (
     <div className="flex-1 overflow-auto">
       <div className="p-8">
-        <button onClick={() => setCurrentPage('quizzes')} className="flex items-center gap-2 text-gray-400 hover:text-white mb-6">
+        <button onClick={() => navigate('/quizzes')} className="flex items-center gap-2 text-gray-400 hover:text-white mb-6">
           <ChevronRight size={20} className="rotate-180" />
           Back
         </button>
@@ -29,7 +31,7 @@ const QuizDetailPage = () => {
               onClick={() => {
                 setQuizStarted(true);
                 setCurrentQuestion(0);
-                setCurrentPage('take-quiz');
+                navigate('/take-quiz');
               }}
               className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90"
             >

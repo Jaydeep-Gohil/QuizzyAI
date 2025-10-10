@@ -1,11 +1,12 @@
 import React from 'react';
 import { BookOpen, Calendar, Users, BarChart3, Plus, Clock, Award } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { stats, events, topStudents, quizzes } from '../data/mockData';
 import StatCard from '../components/StatCard';
 
 const Dashboard = () => {
-  const { setCurrentPage } = useApp();
+  const navigate = useNavigate();
 
   return (
     <div className="flex-1 overflow-auto">
@@ -93,7 +94,7 @@ const Dashboard = () => {
         <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-white">Recent Quizzes</h2>
-            <button onClick={() => setCurrentPage('quizzes')} className="text-purple-400 text-sm font-medium hover:text-purple-300">View All</button>
+            <button onClick={() => navigate('/quizzes')} className="text-purple-400 text-sm font-medium hover:text-purple-300">View All</button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {quizzes.slice(0, 3).map(quiz => (

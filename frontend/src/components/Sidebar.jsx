@@ -1,10 +1,11 @@
 import React from 'react';
 import { BarChart3, BookOpen, Calendar, Users, Settings } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import NavItem from './NavItem';
 
 const Sidebar = () => {
-  const { sidebarOpen, currentPage, setCurrentPage } = useApp();
+  const { sidebarOpen } = useApp();
 
   return (
     <div className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-gray-900 border-r border-gray-800 transition-all duration-300 flex flex-col`}>
@@ -23,15 +24,60 @@ const Sidebar = () => {
         />
 
         <nav className="space-y-1">
-          <NavItem icon={<BarChart3 size={20} />} text="Dashboard" active={currentPage === 'dashboard'} onClick={() => setCurrentPage('dashboard')} />
-          <NavItem icon={<BookOpen size={20} />} text="Quizzes" active={currentPage === 'quizzes'} onClick={() => setCurrentPage('quizzes')} />
-          <NavItem icon={<Calendar size={20} />} text="Events" active={currentPage === 'events'} onClick={() => setCurrentPage('events')} />
-          <NavItem icon={<Users size={20} />} text="Students" active={currentPage === 'students'} onClick={() => setCurrentPage('students')} />
+          <NavLink to="/dashboard" className={({ isActive }) => 
+            `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              isActive 
+                ? 'bg-purple-600 text-white' 
+                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+            }`
+          }>
+            <BarChart3 size={20} />
+            {sidebarOpen && <span>Dashboard</span>}
+          </NavLink>
+          <NavLink to="/quizzes" className={({ isActive }) => 
+            `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              isActive 
+                ? 'bg-purple-600 text-white' 
+                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+            }`
+          }>
+            <BookOpen size={20} />
+            {sidebarOpen && <span>Quizzes</span>}
+          </NavLink>
+          <NavLink to="/events" className={({ isActive }) => 
+            `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              isActive 
+                ? 'bg-purple-600 text-white' 
+                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+            }`
+          }>
+            <Calendar size={20} />
+            {sidebarOpen && <span>Events</span>}
+          </NavLink>
+          <NavLink to="/students" className={({ isActive }) => 
+            `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              isActive 
+                ? 'bg-purple-600 text-white' 
+                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+            }`
+          }>
+            <Users size={20} />
+            {sidebarOpen && <span>Students</span>}
+          </NavLink>
         </nav>
 
         <div className="mt-8 pt-4 border-t border-gray-800">
           <p className="text-gray-500 text-xs font-semibold mb-2 px-3">Manage</p>
-          <NavItem icon={<Settings size={20} />} text="Settings" active={currentPage === 'settings'} onClick={() => setCurrentPage('settings')} />
+          <NavLink to="/settings" className={({ isActive }) => 
+            `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              isActive 
+                ? 'bg-purple-600 text-white' 
+                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+            }`
+          }>
+            <Settings size={20} />
+            {sidebarOpen && <span>Settings</span>}
+          </NavLink>
         </div>
       </div>
     </div>

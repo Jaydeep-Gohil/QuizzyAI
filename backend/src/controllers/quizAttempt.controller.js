@@ -6,6 +6,8 @@ import {
   getUserAttempts,
   getAttemptById,
   getAllUserAttempts,
+  getUserQuizAttemptStats,
+  getQuizAttemptStats
 } from "../dao/quizAttempt.dao.js";
 
 export const startAttempt = asyncHandler(async (req, res) => {
@@ -141,6 +143,49 @@ export const getMyAttempts = asyncHandler(async (req, res) => {
     );
   } catch (error) {
     console.error("❌ Error fetching user attempts:", error);
+    return errorResponse(res, 500, error.message);
+  }
+});
+
+// Get user quiz attempt statistics
+export const getUserStats = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  
+  console.log(`📊 Fetching quiz attempt statistics for user: ${userId}`);
+  
+  try {
+    const stats = await getUserQuizAttemptStats(userId);
+    
+    return successResponse(
+      res,
+      200,
+      stats,
+      "User quiz statistics fetched successfully"
+    );
+  } catch (error) {
+    console.error("❌ Error fetching user statistics:", error);
+    return errorResponse(res, 500, error.message);
+  }
+});
+
+// Get statistics for a specific quiz attempt
+export const getAttemptStats = asyncHandler(async (req, res) => {
+  const { attemptId } = req.params;
+  const userId = req.user._id;
+  
+  console.log(`📊 Fetching statistics for quiz attempt: ${attemptId}`);
+  
+  try {
+    const stats = await getQuizAttemptStats(attemptId);
+    
+    return successResponse(
+      res,
+      200,
+      stats,
+      "Quiz attempt statistics fetched successfully"
+    );
+  } catch (error) {
+    console.error("❌ Error fetching attempt statistics:", error);
     return errorResponse(res, 500, error.message);
   }
 });

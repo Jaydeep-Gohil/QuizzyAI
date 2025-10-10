@@ -6,6 +6,7 @@ import {
   updateQuiz,
   deleteQuiz,
   getQuizzes,
+  getQuizStats
 } from "../controllers/quiz.controller.js";
 import {
   createAIQuiz,
@@ -31,5 +32,8 @@ quizRouter.delete("/:id", protect, deleteQuiz);
 //gemini routes
 quizRouter.post("/gemini/create", createAIQuiz);
 quizRouter.get("/gemini/get", getAIQuize);
+
+// Quiz statistics
+quizRouter.get("/:quizId/statistics", getQuizStats);
 
 export default quizRouter;

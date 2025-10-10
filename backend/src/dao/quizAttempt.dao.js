@@ -1,6 +1,7 @@
 import QuizAttempt from "../models/quizAttempt.model.js";
 import Quiz from "../models/quiz.model.js";
 import mongoose from "mongoose";
+const ObjectId = mongoose.Types.ObjectId;
 
 export const startQuizAttempt = async ({
   quizId,
@@ -230,5 +231,178 @@ export const getAllUserAttempts = async ({
       limit,
       totalPages: Math.ceil(total / limit),
     },
+  };
+};
+
+// Get user quiz attempt statistics
+export const getUserQuizAttemptStats = async (userId) => {
+  const stats = await QuizAttempt.aggregate([
+    { $match: { user: new ObjectId(userId), status: "completed" } },
+    {
+      $group: {
+        _id: null,
+        totalAttempts: { $sum: 1 },
+        totalQuizzes: { $addToSet: "$quiz" },
+        totalPassed: { $sum: { $cond: ["$passed", 1, 0] } },
+        totalFailed: { $sum: { $cond: ["$passed", 0, 1] } },
+        averageScore: { $avg: "$score.percentage" },
+        averageTimeSpent: { $avg: "$timeSpent" },
+        totalCorrectAnswers: { $sum: "$correctAnswers" },
+        totalWrongAnswers: { $sum: "$wrongAnswers" },
+        totalSkippedAnswers: { $sum: "$skippedAnswers" },
+        bestScore: { $max: "$score.percentage" },
+        worstScore: { $min: "$score.percentage" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        totalAttempts: 1,
+        totalQuizzes: { $size: "$totalQuizzes" },
+        totalPassed: 1,
+        totalFailed: 1,
+        passRate: {
+          $cond: [
+            { $eq: ["$totalAttempts", 0] },
+            0,
+            {
+              $multiply: [{ $divide: ["$totalPassed", "$totalAttempts"] }, 100],
+            },
+          ],
+        },
+        averageScore: { $round: ["$averageScore", 1] },
+        averageTimeSpent: { $round: ["$averageTimeSpent", 0] },
+        totalCorrectAnswers: 1,
+        totalWrongAnswers: 1,
+        totalSkippedAnswers: 1,
+        bestScore: { $round: ["$bestScore", 1] },
+        worstScore: { $round: ["$worstScore", 1] },
+      },
+    },
+  ]);
+
+  // Get recent activity
+  const recentActivity = await QuizAttempt.find({ user: userId })
+    .sort({ createdAt: -1 })
+    .limit(5)
+    .populate("quiz", "title category difficulty")
+    .lean();
+
+  // Get category performance
+  const categoryPerformance = await QuizAttempt.aggregate([
+    { $match: { user: new ObjectId(userId), status: "completed" } },
+    {
+      $group: {
+        _id: "$quizSnapshot.category",
+        totalAttempts: { $sum: 1 },
+        averageScore: { $avg: "$score.percentage" },
+        totalPassed: { $sum: { $cond: ["$passed", 1, 0] } },
+      },
+    },
+    {
+      $project: {
+        category: "$_id",
+        _id: 0,
+        totalAttempts: 1,
+        averageScore: { $round: ["$averageScore", 1] },
+        passRate: {
+          $cond: [
+            { $eq: ["$totalAttempts", 0] },
+            0,
+            {
+              $multiply: [{ $divide: ["$totalPassed", "$totalAttempts"] }, 100],
+            },
+          ],
+        },
+      },
+    },
+    { $sort: { totalAttempts: -1 } },
+  ]);
+
+  return {
+    summary:
+      stats.length > 0
+        ? stats[0]
+        : {
+            totalAttempts: 0,
+            totalQuizzes: 0,
+            totalPassed: 0,
+            totalFailed: 0,
+            passRate: 0,
+            averageScore: 0,
+            averageTimeSpent: 0,
+            totalCorrectAnswers: 0,
+            totalWrongAnswers: 0,
+            totalSkippedAnswers: 0,
+            bestScore: 0,
+            worstScore: 0,
+          },
+    recentActivity,
+    categoryPerformance,
+  };
+};
+
+// Get statistics for a specific quiz attempt
+export const getQuizAttemptStats = async (attemptId) => {
+  const attempt = await QuizAttempt.findById(attemptId)
+    .populate("quiz", "title category difficulty settings questions")
+    .lean();
+
+  if (!attempt) {
+    throw new Error("Quiz attempt not found");
+  }
+
+  // Calculate time spent per question
+  const timePerQuestion = attempt.answers.map((answer) => ({
+    questionId: answer.questionId,
+    question: answer.question,
+    timeTaken: answer.timeTaken,
+    isCorrect: answer.isCorrect,
+  }));
+
+  // Calculate performance by question difficulty
+  const difficultyPerformance = {};
+
+  if (attempt.quiz && attempt.quiz.questions) {
+    attempt.quiz.questions.forEach((question) => {
+      const answer = attempt.answers.find(
+        (a) => a.questionId.toString() === question._id.toString()
+      );
+      if (answer) {
+        if (!difficultyPerformance[question.difficulty]) {
+          difficultyPerformance[question.difficulty] = {
+            total: 0,
+            correct: 0,
+            percentage: 0,
+          };
+        }
+
+        difficultyPerformance[question.difficulty].total++;
+        if (answer.isCorrect) {
+          difficultyPerformance[question.difficulty].correct++;
+        }
+      }
+    });
+
+    // Calculate percentages
+    Object.keys(difficultyPerformance).forEach((difficulty) => {
+      const stats = difficultyPerformance[difficulty];
+      stats.percentage =
+        stats.total > 0 ? (stats.correct / stats.total) * 100 : 0;
+    });
+  }
+
+  return {
+    attemptSummary: {
+      score: attempt.score,
+      timeSpent: attempt.timeSpent,
+      correctAnswers: attempt.correctAnswers,
+      wrongAnswers: attempt.wrongAnswers,
+      skippedAnswers: attempt.skippedAnswers,
+      passed: attempt.passed,
+      status: attempt.status,
+    },
+    timePerQuestion,
+    difficultyPerformance,
   };
 };

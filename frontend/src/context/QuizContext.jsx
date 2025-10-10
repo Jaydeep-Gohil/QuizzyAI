@@ -20,19 +20,19 @@ export const QuizProvider = ({ children }) => {
   const [quizResult, setQuizResult] = useState(null);
 
   // ✅ Fetch quizzes when component mounts or pagination changes
-  useEffect(() => {
-    const fetchQuizzes = async () => {
-      try {
-        setLoading(true);
-        const data = await getMannualQuizzes(pageCount, pageLimit);
-        setQuizzes(data?.quizzes || []);
-      } catch (err) {
-        console.error("Failed to fetch quizzes:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchQuizzes = async () => {
+    try {
+      setLoading(true);
+      const data = await getMannualQuizzes(pageCount, pageLimit);
+      setQuizzes(data?.quizzes || []);
+    } catch (err) {
+      console.error("Failed to fetch quizzes:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchQuizzes();
   }, [pageCount, pageLimit]);
 
@@ -165,6 +165,7 @@ export const QuizProvider = ({ children }) => {
     pageLimit,
     setPageCount,
     setPageLimit,
+    fetchQuizzes, // Add refresh function
     
     // Quiz attempt
     currentAttempt,

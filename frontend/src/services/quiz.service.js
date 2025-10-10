@@ -33,3 +33,14 @@ export const getMyAttempts = async (page = 1, limit = 10, status) => {
   const res = await API.get(`/quiz-attempts/my-attempts?${params}`);
   return res.data;
 };
+
+// Quiz Creation Services
+export const createManualQuiz = async (quizData) => {
+  const res = await API.post("/quizzes/manual", quizData);
+  return res.data;
+};
+
+export const createAIQuiz = async (aiQuizData) => {
+  const res = await API.post("/quizzes/gemini/create", aiQuizData);
+  return res.data;
+};

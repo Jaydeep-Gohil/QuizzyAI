@@ -17,7 +17,10 @@ const QuizzesPage = () => {
             <h1 className="text-3xl font-bold text-white mb-2">Quizzes</h1>
             <p className="text-gray-400">Create, manage and analyze your quizzes</p>
           </div>
-          <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90 flex items-center gap-2">
+          <button 
+            onClick={() => navigate('/create-quiz')}
+            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90 flex items-center gap-2"
+          >
             <Plus size={20} />
             Create New Quiz
           </button>

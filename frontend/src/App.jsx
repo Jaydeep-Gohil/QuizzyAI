@@ -16,6 +16,7 @@ import ProfilePage from "./pages/ProfilePage";
 import EventsPage from "./pages/EventsPage";
 import StudentsPage from "./pages/StudentsPage";
 import SettingsPage from "./pages/SettingsPage";
+import CreateQuizPage from "./pages/CreateQuizPage";
 import "./App.css";
 
 // Protected Route Component
@@ -113,6 +114,13 @@ const AppContent = () => {
           <ProtectedRoute>
             <MainLayout>
               <SettingsPage />
+            </MainLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/create-quiz" element={
+          <ProtectedRoute>
+            <MainLayout>
+              <CreateQuizPage />
             </MainLayout>
           </ProtectedRoute>
         } />

@@ -1,7 +1,30 @@
-import React from "react";
-import { Plus, Search } from "lucide-react";
+import React, { useEffect } from "react";
+import { Search } from "lucide-react";
+import { useApp } from "../context/AppContext";
 
 const StudentsPage = () => {
+  const { getDashboardStats, studentData } = useApp();
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        await getDashboardStats();
+      } catch (error) {
+        console.error("Error fetching student stats:", error);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  // Sort students by totalPoints in descending order (highest first)
+  const students =
+    studentData?.data?.students
+      ?.slice() // clone array (avoid mutating original)
+      ?.sort(
+        (a, b) =>
+          (b.quizStats?.totalPoints || 0) - (a.quizStats?.totalPoints || 0)
+      ) || [];
+
   return (
     <div className="flex-1 overflow-auto">
       <div className="p-8">
@@ -9,7 +32,7 @@ const StudentsPage = () => {
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Students</h1>
             <p className="text-gray-400">
-              Manage your students and track their progress
+              Manage your students and track their quiz performance
             </p>
           </div>
         </div>
@@ -29,61 +52,64 @@ const StudentsPage = () => {
                   className="pl-10 pr-4 py-2 bg-gray-900 text-gray-300 rounded-lg border border-gray-700 focus:border-purple-500 focus:outline-none"
                 />
               </div>
-              <select className="px-4 py-2 bg-gray-900 text-gray-300 rounded-lg border border-gray-700">
-                <option>Name</option>
-              </select>
             </div>
           </div>
-
-          {/* <div className="flex gap-2 mb-6">
-            <button className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium">
-              All Students
-            </button>
-            <button className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-600">
-              10A
-            </button>
-            <button className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-600">
-              10B
-            </button>
-          </div> */}
 
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="text-left text-gray-400 text-sm border-b border-gray-700">
                   <th className="pb-3 font-medium">Name</th>
-                  <th className="pb-3 font-medium">Class</th>
                   <th className="pb-3 font-medium">Quizzes Taken</th>
                   <th className="pb-3 font-medium">Average Score</th>
-                  <th className="pb-3 font-medium">Last Active</th>
-                  <th className="pb-3 font-medium"></th>
+                  <th className="pb-3 font-medium">Points</th>
                 </tr>
               </thead>
               <tbody className="text-gray-300">
-                {[1, 2, 3, 4].map((i) => (
-                  <tr
-                    key={i}
-                    className="border-b border-gray-700/50 hover:bg-gray-900/50"
-                  >
-                    <td className="py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full"></div>
-                        <span className="text-white font-medium">
-                          Alex Johnson
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-4">10A</td>
-                    <td className="py-4">12</td>
-                    <td className="py-4 text-white font-semibold">85%</td>
-                    <td className="py-4 text-gray-400">2 hours ago</td>
-                    <td className="py-4">
-                      <button className="text-gray-400 hover:text-white">
-                        •••
-                      </button>
+                {students.length > 0 ? (
+                  students.map((student) => (
+                    <tr
+                      key={student._id}
+                      className="border-b border-gray-700/50 hover:bg-gray-900/50"
+                    >
+                      {/* Name */}
+                      <td className="py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white font-semibold">
+                            {student.name?.charAt(0).toUpperCase() || "?"}
+                          </div>
+                          <span className="text-white font-medium">
+                            {student.name}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Quizzes Taken */}
+                      <td className="py-4">
+                        {student.quizStats?.completedAttempts || 0}
+                      </td>
+
+                      {/* Average Score */}
+                      <td className="py-4 text-white font-semibold">
+                        {student.quizStats?.averageScore?.toFixed(2) || 0}%
+                      </td>
+
+                      {/* Points */}
+                      <td className="py-4 text-pink-400 font-semibold">
+                        {student.quizStats?.totalPoints || 0}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="4"
+                      className="text-center py-6 text-gray-400 italic"
+                    >
+                      No students found
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

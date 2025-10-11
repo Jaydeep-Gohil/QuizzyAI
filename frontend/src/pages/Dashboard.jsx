@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BookOpen,
   Calendar,
@@ -15,6 +15,26 @@ import StatCard from "../components/StatCard";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { getDashboardStats, studentData } = useApp();
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        await getDashboardStats();
+      } catch (error) {
+        console.error("Error fetching student stats:", error);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  const students =
+    studentData?.data?.students
+      ?.slice()
+      ?.sort(
+        (a, b) =>
+          (b.quizStats?.totalPoints || 0) - (a.quizStats?.totalPoints || 0)
+      ) || [];
 
   return (
     <div className="flex-1 overflow-auto">
@@ -112,7 +132,7 @@ const Dashboard = () => {
           <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
             <h2 className="text-xl font-bold text-white mb-6">Top Students</h2>
             <div className="space-y-4">
-              {topStudents.map((student, index) => (
+              {/* {topStudents.map((student, index) => (
                 <div key={index} className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                     {index + 1}
@@ -131,7 +151,60 @@ const Dashboard = () => {
                     </span>
                   </div>
                 </div>
-              ))}
+              ))} */}
+              <div className="bg-gray-800 rounded-xl p-2 border border-gray-700">
+                {/* Heading Row */}
+                <div className="flex items-center justify-between px-2 mb-4 text-gray-400 text-sm font-medium border-b border-gray-700 pb-2">
+                  <div className="w-8 text-center">#</div>
+                  <div className="flex-1">Name</div>
+                  <div className="w-40 text-center">Average Score</div>
+                  <div className="w-24 text-center">Points</div>
+                </div>
+
+                {/* Student Rows */}
+                {students.length > 0 ? (
+                  students.map((student, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between gap-3 py-3 border-b border-gray-700/50 hover:bg-gray-900/40 rounded-lg transition"
+                    >
+                      {/* Index */}
+                      <div className="w-8 text-center text-white font-semibold">
+                        {index + 1}
+                      </div>
+
+                      {/* Name */}
+                      <div className="flex-1 flex items-center gap-3">
+                        {/* <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                          {student.name?.charAt(0).toUpperCase() || "?"}
+                        </div> */}
+                        <div>
+                          <div className="text-white font-medium">
+                            {student.name}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Subject */}
+                      <div className="w-40 text-center text-gray-400 text-sm">
+                        {student.quizStats?.averageScore || "—"}
+                      </div>
+
+                      {/* Points */}
+                      <div className="w-24 flex items-center justify-center gap-1">
+                        <Award className="text-orange-400" size={18} />
+                        <span className="text-orange-400 font-bold">
+                          {student.quizStats?.totalPoints || 0}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-400 italic py-6">
+                    No students found
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>

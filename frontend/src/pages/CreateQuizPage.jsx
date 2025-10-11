@@ -8,6 +8,9 @@ import {
   Link,
   Clock,
   Star,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createManualQuiz, createAIQuiz } from "../services/quiz.service";
@@ -20,6 +23,7 @@ const CreateQuizPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   // Manual Quiz Form State
   const [manualQuiz, setManualQuiz] = useState({
@@ -46,7 +50,7 @@ const CreateQuizPage = () => {
       },
     ],
     settings: {
-      timeLimit: 300,
+      timeLimit: 30,
     },
     tags: [""],
     thumbnail: "",
@@ -59,6 +63,7 @@ const CreateQuizPage = () => {
     difficulty: "medium",
     questionType: "mcq",
     category: "Programming",
+    timeLimit: 30,
   });
 
   const handleManualQuizChange = (
@@ -105,6 +110,7 @@ const CreateQuizPage = () => {
   };
 
   const addQuestion = () => {
+    const newQuestionIndex = manualQuiz.questions.length;
     setManualQuiz({
       ...manualQuiz,
       questions: [
@@ -120,12 +126,36 @@ const CreateQuizPage = () => {
         },
       ],
     });
+    setCurrentQuestionIndex(newQuestionIndex);
   };
 
   const removeQuestion = (index) => {
     if (manualQuiz.questions.length > 1) {
       const newQuestions = manualQuiz.questions.filter((_, i) => i !== index);
       setManualQuiz({ ...manualQuiz, questions: newQuestions });
+      
+      // Adjust current question index if needed
+      if (currentQuestionIndex >= newQuestions.length) {
+        setCurrentQuestionIndex(newQuestions.length - 1);
+      } else if (currentQuestionIndex > index) {
+        setCurrentQuestionIndex(currentQuestionIndex - 1);
+      }
+    }
+  };
+
+  const navigateToQuestion = (index) => {
+    setCurrentQuestionIndex(index);
+  };
+
+  const navigateToPreviousQuestion = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+    }
+  };
+
+  const navigateToNextQuestion = () => {
+    if (currentQuestionIndex < manualQuiz.questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
   };
 
@@ -646,7 +676,7 @@ const CreateQuizPage = () => {
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-semibold text-white">
-                    Questions
+                    Questions ({manualQuiz.questions.length})
                   </h3>
                   <button
                     type="button"
@@ -658,59 +688,110 @@ const CreateQuizPage = () => {
                   </button>
                 </div>
 
-                {manualQuiz.questions.map((question, questionIndex) => (
-                  <div
-                    key={questionIndex}
-                    className="bg-gray-900 rounded-lg p-4 mb-4 border border-gray-700"
-                  >
+                {/* Question Navigation Sidebar */}
+                {manualQuiz.questions.length > 0 && (
+                  <div className="mb-6">
                     <div className="flex items-center justify-between mb-4">
-                      <h4 className="text-lg font-medium text-white">
-                        Question {questionIndex + 1}
-                      </h4>
-                      {manualQuiz.questions.length > 1 && (
+                      <div className="flex items-center gap-2">
                         <button
                           type="button"
-                          onClick={() => removeQuestion(questionIndex)}
-                          className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg"
+                          onClick={navigateToPreviousQuestion}
+                          disabled={currentQuestionIndex === 0}
+                          className="p-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <ChevronLeft size={16} />
+                        </button>
+                        <span className="text-gray-300 text-sm">
+                          Question {currentQuestionIndex + 1} of {manualQuiz.questions.length}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={navigateToNextQuestion}
+                          disabled={currentQuestionIndex === manualQuiz.questions.length - 1}
+                          className="p-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <ChevronRight size={16} />
+                        </button>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => removeQuestion(currentQuestionIndex)}
+                          disabled={manualQuiz.questions.length <= 1}
+                          className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           <Trash2 size={16} />
                         </button>
-                      )}
+                      </div>
                     </div>
 
-                    <div className="space-y-4">
+                    {/* Question Navigation Dots */}
+                    <div className="flex gap-2 mb-4 overflow-x-auto">
+                      {manualQuiz.questions.map((_, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => navigateToQuestion(index)}
+                          className={`flex-shrink-0 w-8 h-8 rounded-full text-xs font-medium transition-colors ${
+                            index === currentQuestionIndex
+                              ? "bg-purple-600 text-white"
+                              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                          }`}
+                        >
+                          {index + 1}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Current Question Details */}
+                {manualQuiz.questions.length > 0 && (
+                  <div className="bg-gray-900 rounded-lg p-6 border border-gray-700">
+                    <div className="flex items-center justify-between mb-6">
+                      <h4 className="text-lg font-medium text-white">
+                        Question {currentQuestionIndex + 1} Details
+                      </h4>
+                      <div className="flex items-center gap-2 text-sm text-gray-400">
+                        <Eye size={16} />
+                        <span>Editing Mode</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                           Question *
                         </label>
                         <textarea
-                          value={question.question}
+                          value={manualQuiz.questions[currentQuestionIndex].question}
                           onChange={(e) =>
                             handleManualQuizChange(
                               "question",
                               e.target.value,
-                              questionIndex
+                              currentQuestionIndex
                             )
                           }
-                          className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
-                          rows={2}
+                          className="w-full px-4 py-3 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                          rows={3}
                           placeholder="Enter your question"
                           required
                         />
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-300 mb-2">
                             Type
                           </label>
                           <select
-                            value={question.type}
+                            value={manualQuiz.questions[currentQuestionIndex].type}
                             onChange={(e) =>
                               handleManualQuizChange(
                                 "type",
                                 e.target.value,
-                                questionIndex
+                                currentQuestionIndex
                               )
                             }
                             className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
@@ -724,12 +805,12 @@ const CreateQuizPage = () => {
                             Difficulty
                           </label>
                           <select
-                            value={question.difficulty}
+                            value={manualQuiz.questions[currentQuestionIndex].difficulty}
                             onChange={(e) =>
                               handleManualQuizChange(
                                 "difficulty",
                                 e.target.value,
-                                questionIndex
+                                currentQuestionIndex
                               )
                             }
                             className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
@@ -745,12 +826,12 @@ const CreateQuizPage = () => {
                           </label>
                           <input
                             type="number"
-                            value={question.points}
+                            value={manualQuiz.questions[currentQuestionIndex].points}
                             onChange={(e) =>
                               handleManualQuizChange(
                                 "points",
                                 parseInt(e.target.value),
-                                questionIndex
+                                currentQuestionIndex
                               )
                             }
                             className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
@@ -763,12 +844,12 @@ const CreateQuizPage = () => {
                           </label>
                           <input
                             type="text"
-                            value={question.correctAnswer}
+                            value={manualQuiz.questions[currentQuestionIndex].correctAnswer}
                             onChange={(e) =>
                               handleManualQuizChange(
                                 "correctAnswer",
                                 e.target.value,
-                                questionIndex
+                                currentQuestionIndex
                               )
                             }
                             className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
@@ -778,30 +859,32 @@ const CreateQuizPage = () => {
                         </div>
                       </div>
 
-                      {question.type === "mcq" && (
+                      {manualQuiz.questions[currentQuestionIndex].type === "mcq" && (
                         <div>
                           <label className="block text-sm font-medium text-gray-300 mb-2">
                             Options *
                           </label>
-                          {question.options.map((option, optionIndex) => (
-                            <div key={optionIndex} className="flex gap-2 mb-2">
-                              <input
-                                type="text"
-                                value={option}
-                                onChange={(e) =>
-                                  handleManualQuizChange(
-                                    "options",
-                                    e.target.value,
-                                    questionIndex,
-                                    optionIndex
-                                  )
-                                }
-                                className="flex-1 px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
-                                placeholder={`Option ${optionIndex + 1}`}
-                                required
-                              />
-                            </div>
-                          ))}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {manualQuiz.questions[currentQuestionIndex].options.map((option, optionIndex) => (
+                              <div key={optionIndex} className="flex gap-2">
+                                <input
+                                  type="text"
+                                  value={option}
+                                  onChange={(e) =>
+                                    handleManualQuizChange(
+                                      "options",
+                                      e.target.value,
+                                      currentQuestionIndex,
+                                      optionIndex
+                                    )
+                                  }
+                                  className="flex-1 px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                                  placeholder={`Option ${optionIndex + 1}`}
+                                  required
+                                />
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
 
@@ -810,22 +893,22 @@ const CreateQuizPage = () => {
                           Explanation
                         </label>
                         <textarea
-                          value={question.explanation}
+                          value={manualQuiz.questions[currentQuestionIndex].explanation}
                           onChange={(e) =>
                             handleManualQuizChange(
                               "explanation",
                               e.target.value,
-                              questionIndex
+                              currentQuestionIndex
                             )
                           }
-                          className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
-                          rows={2}
+                          className="w-full px-4 py-3 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
+                          rows={3}
                           placeholder="Explain why this is the correct answer"
                         />
                       </div>
                     </div>
                   </div>
-                ))}
+                )}
               </div>
 
               {/* Settings */}
@@ -836,7 +919,7 @@ const CreateQuizPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Time Limit (seconds)
+                      Time Limit (minutes)
                     </label>
                     <input
                       type="number"
@@ -928,6 +1011,22 @@ const CreateQuizPage = () => {
                     className="w-full px-4 py-2 bg-gray-900 text-white rounded-lg border border-gray-700 focus:border-purple-500 focus:outline-none"
                     min="1"
                     max="50"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Time Limit (minutes) *
+                  </label>
+                  <input
+                    type="number"
+                    value={aiQuiz.timeLimit}
+                    onChange={(e) =>
+                      handleAiQuizChange("timeLimit", parseInt(e.target.value))
+                    }
+                    className="w-full px-4 py-2 bg-gray-900 text-white rounded-lg border border-gray-700 focus:border-purple-500 focus:outline-none"
+                    min="5"
+                    max="180"
                     required
                   />
                 </div>

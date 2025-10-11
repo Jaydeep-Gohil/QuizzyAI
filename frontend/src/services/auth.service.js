@@ -30,3 +30,9 @@ export const getMyStates = async () => {
   console.log(res);
   return res.data;
 };
+
+// get over all dashboard data
+export const getDashboardData = async(page,limit)=>{
+  const res = await API.get(`/data/get-dashboard-data?page=${page}&limit=${limit}`);
+  return res.data;
+}

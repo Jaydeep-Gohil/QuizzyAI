@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getMe, logout, getMyStates } from "../services/auth.service";
+import { getMe, logout, getMyStates,getDashboardData } from "../services/auth.service";
 
 const AppContext = createContext();
 
@@ -18,6 +18,7 @@ export const AppProvider = ({ children }) => {
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
+  const [studentData, setStudentData] = useState([])
 
   useEffect(() => {
     bootstrap();
@@ -38,6 +39,12 @@ export const AppProvider = ({ children }) => {
   const getMyStatesMethod = async () => {
     return await getMyStates();
   };
+
+  const getDashboardStats = async()=>{
+    const data = await getDashboardData(1,10);
+    setStudentData(data);
+    return data
+  }
 
   const signOut = async () => {
     try {
@@ -63,6 +70,7 @@ export const AppProvider = ({ children }) => {
     signOut,
     getMyStatesMethod,
     bootstrap,
+    getDashboardStats,studentData
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

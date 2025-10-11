@@ -7,7 +7,7 @@ import {
   getAttemptById,
   getAllUserAttempts,
   getUserQuizAttemptStats,
-  getQuizAttemptStats
+  getQuizAttemptStats,
 } from "../dao/quizAttempt.dao.js";
 
 export const startAttempt = asyncHandler(async (req, res) => {
@@ -150,12 +150,12 @@ export const getMyAttempts = asyncHandler(async (req, res) => {
 // Get user quiz attempt statistics
 export const getUserStats = asyncHandler(async (req, res) => {
   const userId = req.user._id;
-  
+
   console.log(`📊 Fetching quiz attempt statistics for user: ${userId}`);
-  
+
   try {
     const stats = await getUserQuizAttemptStats(userId);
-    
+
     return successResponse(
       res,
       200,
@@ -172,12 +172,12 @@ export const getUserStats = asyncHandler(async (req, res) => {
 export const getAttemptStats = asyncHandler(async (req, res) => {
   const { attemptId } = req.params;
   const userId = req.user._id;
-  
+
   console.log(`📊 Fetching statistics for quiz attempt: ${attemptId}`);
-  
+
   try {
     const stats = await getQuizAttemptStats(attemptId);
-    
+
     return successResponse(
       res,
       200,

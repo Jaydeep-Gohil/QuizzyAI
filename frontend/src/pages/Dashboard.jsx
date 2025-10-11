@@ -1,9 +1,17 @@
-import React from 'react';
-import { BookOpen, Calendar, Users, BarChart3, Plus, Clock, Award } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useApp } from '../context/AppContext';
-import { stats, events, topStudents, quizzes } from '../data/mockData';
-import StatCard from '../components/StatCard';
+import React from "react";
+import {
+  BookOpen,
+  Calendar,
+  Users,
+  BarChart3,
+  Plus,
+  Clock,
+  Award,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useApp } from "../context/AppContext";
+import { stats, events, topStudents, quizzes } from "../data/mockData";
+import StatCard from "../components/StatCard";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -14,36 +22,65 @@ const Dashboard = () => {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-            <p className="text-gray-400">Welcome back, Sarah! Here's what's happening with your quizzes</p>
+            <p className="text-gray-400">
+              Welcome back, Sarah! Here's what's happening with your quizzes
+            </p>
           </div>
-          <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90 flex items-center gap-2">
-            <Plus size={20} />
-            Create New Quiz
-          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatCard icon={<BookOpen size={24} />} title="Total Quizzes" value={stats.totalQuizzes} change="+12.5%" color="blue" />
-          <StatCard icon={<Calendar size={24} />} title="Active Events" value={stats.activeEvents} change="+12.5%" color="green" />
-          <StatCard icon={<Users size={24} />} title="Students" value={stats.students} change="+12.5%" color="purple" />
-          <StatCard icon={<BarChart3 size={24} />} title="Avg. Completion" value={stats.avgCompletion} change="-12.5%" color="orange" />
+          <StatCard
+            icon={<BookOpen size={24} />}
+            title="Total Quizzes"
+            value={stats.totalQuizzes}
+            change="+12.5%"
+            color="blue"
+          />
+          <StatCard
+            icon={<Calendar size={24} />}
+            title="Active Events"
+            value={stats.activeEvents}
+            change="+12.5%"
+            color="green"
+          />
+          <StatCard
+            icon={<Users size={24} />}
+            title="Students"
+            value={stats.students}
+            change="+12.5%"
+            color="purple"
+          />
+          <StatCard
+            icon={<BarChart3 size={24} />}
+            title="Avg. Completion"
+            value={stats.avgCompletion}
+            change="-12.5%"
+            color="orange"
+          />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2 bg-gray-800 rounded-xl p-6 border border-gray-700">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-white">Recent Events</h2>
-              <button className="text-purple-400 text-sm font-medium hover:text-purple-300">View All</button>
+              <button className="text-purple-400 text-sm font-medium hover:text-purple-300">
+                View All
+              </button>
             </div>
             <div className="space-y-4">
-              {events.map(event => (
-                <div key={event.id} className="flex items-center justify-between p-4 bg-gray-900 rounded-lg border border-gray-700 hover:border-purple-500 transition-colors">
+              {events.map((event) => (
+                <div
+                  key={event.id}
+                  className="flex items-center justify-between p-4 bg-gray-900 rounded-lg border border-gray-700 hover:border-purple-500 transition-colors"
+                >
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
                       <Calendar className="text-green-400" size={24} />
                     </div>
                     <div>
-                      <h3 className="text-white font-semibold">{event.title}</h3>
+                      <h3 className="text-white font-semibold">
+                        {event.title}
+                      </h3>
                       <div className="flex items-center gap-4 mt-1">
                         <span className="text-gray-400 text-sm flex items-center gap-1">
                           <Clock size={14} />
@@ -56,12 +93,16 @@ const Dashboard = () => {
                       </div>
                     </div>
                   </div>
-                  <button className={`px-4 py-2 rounded-lg font-medium ${
-                    event.status === 'Active' ? 'bg-purple-600 text-white' : 
-                    event.status === 'Upcoming' ? 'bg-gray-700 text-white' : 
-                    'bg-gray-700 text-gray-400'
-                  }`}>
-                    {event.status === 'Active' ? 'View Live' : 'Manage'}
+                  <button
+                    className={`px-4 py-2 rounded-lg font-medium ${
+                      event.status === "Active"
+                        ? "bg-purple-600 text-white"
+                        : event.status === "Upcoming"
+                        ? "bg-gray-700 text-white"
+                        : "bg-gray-700 text-gray-400"
+                    }`}
+                  >
+                    {event.status === "Active" ? "View Live" : "Manage"}
                   </button>
                 </div>
               ))}
@@ -79,11 +120,15 @@ const Dashboard = () => {
                   <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full"></div>
                   <div className="flex-1">
                     <div className="text-white font-medium">{student.name}</div>
-                    <div className="text-gray-400 text-sm">{student.subject}</div>
+                    <div className="text-gray-400 text-sm">
+                      {student.subject}
+                    </div>
                   </div>
                   <div className="flex items-center gap-1">
                     <Award className="text-orange-400" size={18} />
-                    <span className="text-orange-400 font-bold">{student.score}</span>
+                    <span className="text-orange-400 font-bold">
+                      {student.score}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -94,18 +139,30 @@ const Dashboard = () => {
         <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-white">Recent Quizzes</h2>
-            <button onClick={() => navigate('/quizzes')} className="text-purple-400 text-sm font-medium hover:text-purple-300">View All</button>
+            <button
+              onClick={() => navigate("/quizzes")}
+              className="text-purple-400 text-sm font-medium hover:text-purple-300"
+            >
+              View All
+            </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {quizzes.slice(0, 3).map(quiz => (
-              <div key={quiz.id} className="bg-gray-900 rounded-lg p-4 border border-gray-700 hover:border-purple-500 transition-colors cursor-pointer">
+            {quizzes.slice(0, 3).map((quiz) => (
+              <div
+                key={quiz.id}
+                className="bg-gray-900 rounded-lg p-4 border border-gray-700 hover:border-purple-500 transition-colors cursor-pointer"
+              >
                 <div className="flex items-start justify-between mb-3">
                   <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
                     <BookOpen className="text-purple-400" size={20} />
                   </div>
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    quiz.status === 'Published' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
-                  }`}>
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-medium ${
+                      quiz.status === "Published"
+                        ? "bg-green-500/20 text-green-400"
+                        : "bg-yellow-500/20 text-yellow-400"
+                    }`}
+                  >
                     {quiz.status}
                   </span>
                 </div>
@@ -121,12 +178,19 @@ const Dashboard = () => {
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-400 text-sm">{quiz.completions} completions</span>
+                  <span className="text-gray-400 text-sm">
+                    {quiz.completions} completions
+                  </span>
                   <div className="flex items-center gap-2">
                     <div className="flex-1 bg-gray-700 rounded-full h-2 w-20">
-                      <div className="bg-purple-500 h-2 rounded-full" style={{width: `${quiz.rate}%`}}></div>
+                      <div
+                        className="bg-purple-500 h-2 rounded-full"
+                        style={{ width: `${quiz.rate}%` }}
+                      ></div>
                     </div>
-                    <span className="text-white text-sm font-medium">{quiz.rate}%</span>
+                    <span className="text-white text-sm font-medium">
+                      {quiz.rate}%
+                    </span>
                   </div>
                 </div>
               </div>

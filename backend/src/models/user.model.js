@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema(
       url: { type: String, default: "" },
     },
 
-    role: { type: String, default: "user" },
+    role: { type: String, default: "student" },
   },
   { timestamps: true }
 );

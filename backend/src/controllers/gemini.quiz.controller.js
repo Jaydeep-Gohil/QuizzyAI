@@ -150,11 +150,7 @@ Create a comprehensive quiz that includes:
 1. Study material to help learners prepare (minimum 200 words)
 2. ${numberOfQuestions} well-crafted questions as per the type specified
 3. Detailed explanations for each answer (minimum 50 words per explanation)
-4. Appropriate time limits: ${
-      numberOfQuestions * 2
-    } minutes total, ${Math.floor(
-      (numberOfQuestions * 2 * 60) / numberOfQuestions
-    )} seconds per question
+4. Appropriate time limits: ${req.body.timeLimit} in minutes
 5. Relevant tags for discoverability (at least 5 tags)
 
 Ensure the quiz is educational, engaging, and properly structured according to the JSON format specified.

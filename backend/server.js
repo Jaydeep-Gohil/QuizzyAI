@@ -9,6 +9,7 @@ import userRoutes from "./src/routes/user.routes.js";
 import publicRoutes from "./src/routes/public.routes.js";
 import quizRoutes from "./src/routes/quiz.routes.js";
 import quizAttemptRouter from "./src/routes/quizAttempt.router.js";
+import overAllDataRouter from "./src/routes/overAllData.routes.js";
 import { errorHandler } from "./src/middlewares/error.middleware.js";
 
 dotenv.config();
@@ -40,6 +41,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/p", publicRoutes);
 app.use("/api/quizzes", quizRoutes);
 app.use("/api/quiz-attempts", quizAttemptRouter);
+app.use("/api/data", overAllDataRouter);
 
 // Error handler
 app.use(errorHandler);

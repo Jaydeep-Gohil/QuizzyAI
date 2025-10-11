@@ -6,7 +6,8 @@ import {
   updateQuiz,
   deleteQuiz,
   getQuizzes,
-  getQuizStats
+  getQuizStats,
+  getMannualQuizess,
 } from "../controllers/quiz.controller.js";
 import {
   createAIQuiz,
@@ -23,6 +24,7 @@ quizRouter.use(protect);
 
 // Manual quiz creation
 quizRouter.post("/manual", createManualQuiz);
+quizRouter.get("/get-mannual", getMannualQuizess);
 
 // Get, update, delete by ID
 quizRouter.get("/:id", getQuiz);

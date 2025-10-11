@@ -20,6 +20,10 @@ export const getDashboardDataDao = async ({ page, limit, skip, filters }) => {
       ...searchQuery,
     });
 
+    const totalQuizzes = await Quiz.countDocuments();
+    const totalUsers = await User.countDocuments();
+    const latestQuizzes = await Quiz.find({}).sort({ createdAt: -1 }).limit(3);
+
     // Aggregation pipeline to get students with their quiz attempt statistics
     const studentsWithStats = await User.aggregate([
       {
@@ -243,6 +247,9 @@ export const getDashboardDataDao = async ({ page, limit, skip, filters }) => {
 
     return {
       students: studentsWithStats,
+      totalQuizzes,
+      totalUsers,
+      latestQuizzes,
       pagination: {
         currentPage: page,
         totalPages,

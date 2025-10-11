@@ -46,3 +46,13 @@ export const createAIQuiz = async (aiQuizData) => {
   const res = await API.post("/quizzes/gemini/create", aiQuizData);
   return res.data;
 };
+
+export const getAiQuizService = async (page, limit) => {
+  const res = await API.get(`/quizzes/gemini/get?page=${page}&limit=${limit}`);
+  return res.data;
+};
+
+export const getMannualQuizeService = async (page, limit) => {
+  const res = await API.get(`/quizzes/get-mannual?page=${page}&limit=${limit}`);
+  return res.data;
+};

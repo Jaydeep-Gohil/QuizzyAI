@@ -1,4 +1,5 @@
 import asyncHandler from "../middlewares/async.middleware.js";
+import Quiz from "../models/quiz.model.js";
 import { successResponse, errorResponse } from "../utils/responses.js";
 import {
   createQuiz,
@@ -6,7 +7,7 @@ import {
   updateQuizById,
   deleteQuizById,
   listQuizzes,
-  getQuizStatistics
+  getQuizStatistics,
 } from "../dao/quiz.dao.js";
 
 // Create quiz (manual)
@@ -76,35 +77,46 @@ export const deleteQuiz = asyncHandler(async (req, res) => {
 
 // List quizzes
 export const getQuizzes = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 10, category, difficulty, tags } = req.query;
+  const { limit = 10, category, difficulty, tags } = req.query;
 
+  // Build filters
   const filters = {};
   if (category) filters.category = category;
   if (difficulty) filters.difficulty = difficulty;
   if (tags) filters.tags = { $in: tags.split(",") };
 
-  const result = await listQuizzes({
-    page: parseInt(page),
-    limit: parseInt(limit),
-    ...filters,
-  });
+  try {
+    // ✅ Randomly fetch quizzes using aggregation
+    const randomQuizzes = await Quiz.aggregate([
+      { $match: filters },
+      { $sample: { size: parseInt(limit) } }, // 👈 Randomly selects N docs
+    ]);
 
-  if (!result || result.quizzes.length === 0) {
-    return errorResponse(res, 404, "No quizzes found");
+    if (!randomQuizzes || randomQuizzes.length === 0) {
+      return errorResponse(res, 404, "No quizzes found");
+    }
+
+    return successResponse(
+      res,
+      200,
+      { quizzes: randomQuizzes, count: randomQuizzes.length },
+      "Random quizzes fetched successfully"
+    );
+  } catch (error) {
+    console.error("❌ Error fetching random quizzes:", error);
+    return errorResponse(res, 500, error.message || "Internal server error");
   }
-
-  return successResponse(res, 200, result, "Quizzes listed successfully");
 });
 
 // Get quiz statistics
 export const getQuizStats = asyncHandler(async (req, res) => {
   const { quizId } = req.params;
-  
+
   console.log(`📊 Fetching statistics for quiz: ${quizId}`);
-  
+
   try {
     const stats = await getQuizStatistics(quizId);
-    
+
     return successResponse(
       res,
       200,
@@ -114,5 +126,41 @@ export const getQuizStats = asyncHandler(async (req, res) => {
   } catch (error) {
     console.error("❌ Error fetching quiz statistics:", error);
     return errorResponse(res, 500, error.message);
+  }
+});
+
+// Get only manually created quizzes (not AI)
+export const getMannualQuizess = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 10, category, difficulty, tags } = req.query;
+
+  const filters = { isAI: false }; // Only non-AI quizzes
+  if (category) filters.category = category;
+  if (difficulty) filters.difficulty = difficulty;
+  if (tags) filters.tags = { $in: tags.split(",") };
+
+  try {
+    const result = await listQuizzes({
+      page: parseInt(page),
+      limit: parseInt(limit),
+      ...filters,
+    });
+
+    if (!result || result.quizzes.length === 0) {
+      return errorResponse(res, 404, "No manual quizzes found");
+    }
+
+    return successResponse(
+      res,
+      200,
+      result,
+      "Manual quizzes listed successfully"
+    );
+  } catch (error) {
+    console.error("❌ Error fetching manual quizzes:", error);
+    return errorResponse(
+      res,
+      500,
+      error.message || "Failed to fetch manual quizzes"
+    );
   }
 });

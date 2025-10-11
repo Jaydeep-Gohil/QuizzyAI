@@ -30,7 +30,7 @@ const Header = () => {
         >
           <Menu size={24} />
         </button>
-        <div className="relative">
+        {/* <div className="relative">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
             size={18}
@@ -40,7 +40,7 @@ const Header = () => {
             placeholder="Search..."
             className="pl-10 pr-4 py-2 bg-gray-800 text-gray-300 rounded-lg border border-gray-700 focus:border-purple-500 focus:outline-none w-80"
           />
-        </div>
+        </div> */}
       </div>
       <div className="flex items-center gap-4">
         <button className="relative p-2 text-gray-400 hover:text-white">

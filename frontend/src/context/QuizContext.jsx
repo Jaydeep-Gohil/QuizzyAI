@@ -4,6 +4,8 @@ import {
   startQuizAttempt,
   submitQuizAttempt,
   getAttemptDetails,
+  getAiQuizService,
+  getMannualQuizeService,
 } from "../services/quiz.service";
 
 const QuizContext = createContext();
@@ -11,7 +13,7 @@ const QuizContext = createContext();
 export const QuizProvider = ({ children }) => {
   const [quizzes, setQuizzes] = useState([]);
   const [pageCount, setPageCount] = useState(1);
-  const [pageLimit, setPageLimit] = useState(5);
+  const [pageLimit, setPageLimit] = useState(10);
   const [loading, setLoading] = useState(false);
 
   // Quiz Attempt State
@@ -170,6 +172,37 @@ export const QuizProvider = ({ children }) => {
     return answers.find((a) => a.questionId === questionId);
   };
 
+  const getAiQuiz = async () => {
+    try {
+      setLoading(true);
+      const data = await getAiQuizService(pageCount, pageLimit);
+      const aiQuizzes = (data?.quizzes || []).filter((quiz) => quiz.isAI);
+      setQuizzes(aiQuizzes);
+      return { ...data, quizzes: aiQuizzes };
+    } catch (error) {
+      console.error("Failed to get AI quizzes:", error);
+      setQuizzes([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getMannualQuiz = async () => {
+    try {
+      setLoading(true);
+      const data = await getMannualQuizeService(pageCount, pageLimit);
+
+      const manualQuizzes = (data?.quizzes || []).filter((quiz) => !quiz.isAI);
+
+      setQuizzes(manualQuizzes);
+      return { ...data, quizzes: manualQuizzes };
+    } catch (error) {
+      console.error("Failed to get manual quizzes:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const value = {
     // Quiz list
     quizzes,
@@ -199,6 +232,8 @@ export const QuizProvider = ({ children }) => {
     resetQuiz,
     formatTime,
     getCurrentAnswer,
+    getAiQuiz,
+    getMannualQuiz,
   };
 
   return <QuizContext.Provider value={value}>{children}</QuizContext.Provider>;

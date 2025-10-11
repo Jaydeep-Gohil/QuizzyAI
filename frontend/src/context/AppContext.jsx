@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getMe, logout } from "../services/auth.service";
+import { getMe, logout, getMyStates } from "../services/auth.service";
 
 const AppContext = createContext();
 
@@ -20,19 +20,24 @@ export const AppProvider = ({ children }) => {
   const [quizStarted, setQuizStarted] = useState(false);
 
   useEffect(() => {
-    const bootstrap = async () => {
-      try {
-        const data = await getMe();
-        // backend success payload merges user fields at root, we ensure minimal shape
-        setCurrentUser(data);
-        setIsAuthenticated(true);
-      } catch (_err) {
-        setCurrentUser(null);
-        setIsAuthenticated(false);
-      }
-    };
     bootstrap();
   }, []);
+
+  const bootstrap = async () => {
+    try {
+      const data = await getMe();
+      // backend success payload merges user fields at root, we ensure minimal shape
+      setCurrentUser(data);
+      setIsAuthenticated(true);
+    } catch (_err) {
+      setCurrentUser(null);
+      setIsAuthenticated(false);
+    }
+  };
+
+  const getMyStatesMethod = async () => {
+    return await getMyStates();
+  };
 
   const signOut = async () => {
     try {
@@ -56,6 +61,8 @@ export const AppProvider = ({ children }) => {
     quizStarted,
     setQuizStarted,
     signOut,
+    getMyStatesMethod,
+    bootstrap,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

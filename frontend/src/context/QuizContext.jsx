@@ -1,5 +1,10 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { getMannualQuizzes, startQuizAttempt, submitQuizAttempt, getAttemptDetails } from "../services/quiz.service";
+import {
+  getAllQuizes,
+  startQuizAttempt,
+  submitQuizAttempt,
+  getAttemptDetails,
+} from "../services/quiz.service";
 
 const QuizContext = createContext();
 
@@ -8,7 +13,7 @@ export const QuizProvider = ({ children }) => {
   const [pageCount, setPageCount] = useState(1);
   const [pageLimit, setPageLimit] = useState(5);
   const [loading, setLoading] = useState(false);
-  
+
   // Quiz Attempt State
   const [currentAttempt, setCurrentAttempt] = useState(null);
   const [currentQuiz, setCurrentQuiz] = useState(null);
@@ -23,7 +28,7 @@ export const QuizProvider = ({ children }) => {
   const fetchQuizzes = async () => {
     try {
       setLoading(true);
-      const data = await getMannualQuizzes(pageCount, pageLimit);
+      const data = await getAllQuizes(pageCount, pageLimit);
       setQuizzes(data?.quizzes || []);
     } catch (err) {
       console.error("Failed to fetch quizzes:", err);
@@ -41,12 +46,12 @@ export const QuizProvider = ({ children }) => {
     let interval = null;
     if (quizStarted && timeRemaining > 0) {
       interval = setInterval(() => {
-        setTimeRemaining(time => time - 1);
+        setTimeRemaining((time) => time - 1);
       }, 1000);
     } else if (timeRemaining === 0 && quizStarted) {
       // Auto-submit when time runs out
       // call handleSubmitQuiz without override, it will use current answers
-      handleSubmitQuiz().catch(err => {
+      handleSubmitQuiz().catch((err) => {
         console.error("Auto-submit failed:", err);
       });
     }
@@ -58,7 +63,7 @@ export const QuizProvider = ({ children }) => {
       setLoading(true);
       // startQuizAttempt returns parsed data (attempt object)
       const data = await startQuizAttempt(quiz._id);
-      console.log('Started quiz attempt:', data);
+      console.log("Started quiz attempt:", data);
       setCurrentAttempt(data);
       setCurrentQuiz(quiz);
       setCurrentQuestionIndex(0);
@@ -80,11 +85,11 @@ export const QuizProvider = ({ children }) => {
     const newAnswer = {
       questionId,
       selectedAnswer,
-      timeTaken
+      timeTaken,
     };
 
-    setAnswers(prev => {
-      const existingIndex = prev.findIndex(a => a.questionId === questionId);
+    setAnswers((prev) => {
+      const existingIndex = prev.findIndex((a) => a.questionId === questionId);
       if (existingIndex >= 0) {
         const updated = [...prev];
         updated[existingIndex] = newAnswer;
@@ -95,14 +100,17 @@ export const QuizProvider = ({ children }) => {
   };
 
   const nextQuestion = () => {
-    if (currentQuiz && currentQuestionIndex < currentQuiz.questions.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
+    if (
+      currentQuiz &&
+      currentQuestionIndex < currentQuiz.questions.length - 1
+    ) {
+      setCurrentQuestionIndex((prev) => prev + 1);
     }
   };
 
   const previousQuestion = () => {
     if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(prev => prev - 1);
+      setCurrentQuestionIndex((prev) => prev - 1);
     }
   };
 
@@ -110,14 +118,19 @@ export const QuizProvider = ({ children }) => {
   const handleSubmitQuiz = async (overrideAnswers = null) => {
     try {
       setLoading(true);
-      
+
       if (!currentAttempt || !currentAttempt._id) {
-        throw new Error("No active quiz attempt found. Please start the quiz again.");
+        throw new Error(
+          "No active quiz attempt found. Please start the quiz again."
+        );
       }
 
       const payloadAnswers = overrideAnswers || answers;
-      
-      const result = await submitQuizAttempt(currentAttempt._id, payloadAnswers);
+
+      const result = await submitQuizAttempt(
+        currentAttempt._id,
+        payloadAnswers
+      );
       // submitQuizAttempt returns parsed result object
       setQuizResult(result);
       setQuizCompleted(true);
@@ -146,7 +159,7 @@ export const QuizProvider = ({ children }) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    
+
     if (hours > 0) {
       return `${hours}h ${minutes}m ${secs}s`;
     }
@@ -154,7 +167,7 @@ export const QuizProvider = ({ children }) => {
   };
 
   const getCurrentAnswer = (questionId) => {
-    return answers.find(a => a.questionId === questionId);
+    return answers.find((a) => a.questionId === questionId);
   };
 
   const value = {
@@ -166,7 +179,7 @@ export const QuizProvider = ({ children }) => {
     setPageCount,
     setPageLimit,
     fetchQuizzes, // Add refresh function
-    
+
     // Quiz attempt
     currentAttempt,
     currentQuiz,
@@ -176,7 +189,7 @@ export const QuizProvider = ({ children }) => {
     quizStarted,
     quizCompleted,
     quizResult,
-    
+
     // Quiz actions
     startQuiz,
     submitAnswer,

@@ -235,7 +235,9 @@ export const getAllUserAttempts = async ({
 };
 
 // Get user quiz attempt statistics
+
 export const getUserQuizAttemptStats = async (userId) => {
+  // 🎯 1️⃣ MAIN USER SUMMARY
   const stats = await QuizAttempt.aggregate([
     { $match: { user: new ObjectId(userId), status: "completed" } },
     {
@@ -281,14 +283,47 @@ export const getUserQuizAttemptStats = async (userId) => {
     },
   ]);
 
-  // Get recent activity
+  // 🎯 2️⃣ TOTAL POINTS (Completed + Passed Attempts Only)
+  const totalPointsResult = await QuizAttempt.aggregate([
+    {
+      $match: {
+        user: new ObjectId(userId),
+        status: "completed",
+        passed: true,
+      },
+    },
+    {
+      $project: {
+        totalPointsEarned: {
+          $sum: {
+            $map: {
+              input: "$answers",
+              as: "ans",
+              in: { $ifNull: ["$$ans.points", 0] },
+            },
+          },
+        },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        totalPointsEarned: { $sum: "$totalPointsEarned" },
+      },
+    },
+  ]);
+
+  const totalPointsEarned =
+    totalPointsResult.length > 0 ? totalPointsResult[0].totalPointsEarned : 0;
+
+  // 🎯 3️⃣ RECENT ACTIVITY
   const recentActivity = await QuizAttempt.find({ user: userId })
     .sort({ createdAt: -1 })
     .limit(5)
     .populate("quiz", "title category difficulty")
     .lean();
 
-  // Get category performance
+  // 🎯 4️⃣ CATEGORY PERFORMANCE
   const categoryPerformance = await QuizAttempt.aggregate([
     { $match: { user: new ObjectId(userId), status: "completed" } },
     {
@@ -319,10 +354,11 @@ export const getUserQuizAttemptStats = async (userId) => {
     { $sort: { totalAttempts: -1 } },
   ]);
 
+  // 🎯 5️⃣ FINAL RESPONSE
   return {
     summary:
       stats.length > 0
-        ? stats[0]
+        ? { ...stats[0], totalPointsEarned }
         : {
             totalAttempts: 0,
             totalQuizzes: 0,
@@ -336,6 +372,7 @@ export const getUserQuizAttemptStats = async (userId) => {
             totalSkippedAnswers: 0,
             bestScore: 0,
             worstScore: 0,
+            totalPointsEarned: 0,
           },
     recentActivity,
     categoryPerformance,

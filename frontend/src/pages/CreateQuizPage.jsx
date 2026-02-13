@@ -277,11 +277,14 @@ const CreateQuizPage = () => {
       }
     } catch (error) {
       console.error("Error creating quiz:", error);
-      setError(
-        error.response?.data?.message ||
-          error.message ||
-          "Failed to create quiz. Please try again."
-      );
+      const responseMessage = error.response?.data?.message;
+      const message =
+        typeof responseMessage === "string"
+          ? responseMessage
+          : error.response?.data?.error ||
+            error.message ||
+            "Failed to create quiz. Please try again.";
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }

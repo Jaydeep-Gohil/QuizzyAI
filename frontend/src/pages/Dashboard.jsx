@@ -156,7 +156,7 @@ const Dashboard = () => {
                 {students.length > 0 ? (
                   students.map((student, index) => (
                     <div
-                      key={index}
+                      key={student._id || student.id || student.email || index}
                       className="flex items-center justify-between gap-3 py-3 border-b border-gray-700/50 hover:bg-gray-900/40 rounded-lg transition"
                     >
                       {/* Index */}
@@ -211,9 +211,9 @@ const Dashboard = () => {
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {studentData?.data?.latestQuizzes.map((quiz) => (
+            {studentData?.data?.latestQuizzes.map((quiz, index) => (
               <div
-                key={quiz.id}
+                key={quiz._id || quiz.id || quiz.title || index}
                 className="bg-gray-900 rounded-lg p-4 border border-gray-700 hover:border-purple-500 transition-colors cursor-pointer"
               >
                 <div className="flex items-start justify-between mb-3">
@@ -255,7 +255,10 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
-          <button className="w-full mt-6 p-4 border-2 border-dashed border-gray-700 rounded-lg text-gray-400 hover:text-white hover:border-purple-500 transition-colors flex items-center justify-center gap-2">
+          <button
+            onClick={() => navigate("/create-quiz")}
+            className="w-full mt-6 p-4 border-2 border-dashed border-gray-700 rounded-lg text-gray-400 hover:text-white hover:border-purple-500 transition-colors flex items-center justify-center gap-2"
+          >
             <Plus size={20} />
             Create New Quiz
           </button>

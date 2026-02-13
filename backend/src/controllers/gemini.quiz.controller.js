@@ -6,7 +6,10 @@ import { GoogleGenAI } from "@google/genai";
 import { listAIQuizzes } from "../dao/quiz.dao.js";
 
 // Initialize Gemini AI
-const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY);
+if (!process.env.GEMINI_API_KEY) {
+  throw new Error("GEMINI_API_KEY is missing. Check your .env loading.");
+}
+const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 // System prompt for quiz generation
 const QUIZ_GENERATION_PROMPT = `You are an expert educational content creator specializing in generating high-quality quizzes. 
@@ -162,7 +165,7 @@ IMPORTANT: Return ONLY the JSON object. No markdown formatting, no code blocks, 
 
     // Generate content using Gemini with JSON mode
     const result = await genAI.models.generateContent({
-      model: "gemini-2.0-flash-exp",
+      model: "gemini-3-flash-preview",
       contents: QUIZ_GENERATION_PROMPT + "\n\n" + userPrompt,
       generationConfig: {
         temperature: 0.7,
@@ -366,7 +369,7 @@ IMPORTANT: Return ONLY the JSON object. No markdown formatting, no code blocks, 
       isAI: true,
       aiGenerationData: {
         prompt: prompt,
-        model: "gemini-2.0-flash-exp",
+        model: "gemini-3-flash-preview",
         generatedAt: new Date(),
         tokensUsed: tokensUsed?.totalTokens || 0,
         metadata: {
@@ -401,7 +404,8 @@ IMPORTANT: Return ONLY the JSON object. No markdown formatting, no code blocks, 
     console.error("Stack:", error.stack);
 
     // Return detailed error for debugging
-    return errorResponse(res, 500, {
+    return res.status(500).json({
+      success: false,
       message: "Failed to generate quiz",
       error: error.message,
       details:

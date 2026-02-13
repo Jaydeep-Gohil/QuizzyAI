@@ -1,5 +1,5 @@
+import "dotenv/config";
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
@@ -11,8 +11,6 @@ import quizRoutes from "./src/routes/quiz.routes.js";
 import quizAttemptRouter from "./src/routes/quizAttempt.router.js";
 import overAllDataRouter from "./src/routes/overAllData.routes.js";
 import { errorHandler } from "./src/middlewares/error.middleware.js";
-
-dotenv.config();
 connectDB();
 
 const app = express();

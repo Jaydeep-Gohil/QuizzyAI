@@ -4,7 +4,7 @@ const optionSchema = new mongoose.Schema(
   {
     title: String,
     url: String,
-    type: { type: String, enum: ["article", "video", "documentation"] },
+    type: { type: String, enum: ["article", "video", "documentation", "book"] },
   },
   { _id: false }
 );

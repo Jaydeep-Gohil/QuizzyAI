@@ -14,7 +14,7 @@ export const startAttempt = asyncHandler(async (req, res) => {
   const { quizId } = req.body;
   const userId = req.user._id;
 
-  console.log(`📝 Starting quiz attempt: ${quizId} for user: ${userId}`);
+  console.log(`Starting quiz attempt: ${quizId} for user: ${userId}`);
 
   if (!quizId) {
     return errorResponse(res, 400, "Quiz ID is required");
@@ -28,7 +28,7 @@ export const startAttempt = asyncHandler(async (req, res) => {
       userAgent: req.headers["user-agent"],
     });
 
-    console.log(`✅ Quiz attempt started: ${attempt._id}`);
+    console.log(`Quiz attempt started: ${attempt._id}`);
 
     return successResponse(
       res,
@@ -37,7 +37,7 @@ export const startAttempt = asyncHandler(async (req, res) => {
       "Quiz attempt started successfully"
     );
   } catch (error) {
-    console.error("❌ Error starting quiz attempt:", error);
+    console.error("Error starting quiz attempt:", error);
     return errorResponse(res, 400, error.message);
   }
 });
@@ -47,7 +47,7 @@ export const submitAttempt = asyncHandler(async (req, res) => {
   const { answers } = req.body;
   const userId = req.user._id;
 
-  console.log(`📤 Submitting quiz attempt: ${attemptId}`);
+  console.log(`Submitting quiz attempt: ${attemptId}`);
 
   if (!answers || !Array.isArray(answers)) {
     return errorResponse(res, 400, "Answers array is required");
@@ -60,11 +60,11 @@ export const submitAttempt = asyncHandler(async (req, res) => {
       userId,
     });
 
-    console.log(`✅ Quiz submitted - Score: ${result.score.percentage}%`);
+    console.log(`Quiz submitted - Score: ${result.score.percentage}%`);
 
     return successResponse(res, 200, result, "Quiz submitted successfully");
   } catch (error) {
-    console.error("❌ Error submitting quiz:", error);
+    console.error("Error submitting quiz:", error);
     return errorResponse(res, 400, error.message);
   }
 });
@@ -74,7 +74,7 @@ export const getQuizAttempts = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
   const userId = req.user._id;
 
-  console.log(`📊 Fetching attempts for quiz: ${quizId}`);
+  console.log(`Fetching attempts for quiz: ${quizId}`);
 
   try {
     const result = await getUserAttempts({
@@ -91,7 +91,7 @@ export const getQuizAttempts = asyncHandler(async (req, res) => {
       "Quiz attempts fetched successfully"
     );
   } catch (error) {
-    console.error("❌ Error fetching attempts:", error);
+    console.error("Error fetching attempts:", error);
     return errorResponse(res, 500, error.message);
   }
 });
@@ -100,7 +100,7 @@ export const getAttemptDetails = asyncHandler(async (req, res) => {
   const { attemptId } = req.params;
   const userId = req.user._id;
 
-  console.log(`📋 Fetching attempt details: ${attemptId}`);
+  console.log(`Fetching attempt details: ${attemptId}`);
 
   try {
     const attempt = await getAttemptById(attemptId, userId);
@@ -116,7 +116,7 @@ export const getAttemptDetails = asyncHandler(async (req, res) => {
       "Attempt details fetched successfully"
     );
   } catch (error) {
-    console.error("❌ Error fetching attempt details:", error);
+    console.error("Error fetching attempt details:", error);
     return errorResponse(res, 500, error.message);
   }
 });
@@ -125,7 +125,7 @@ export const getMyAttempts = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10, status } = req.query;
   const userId = req.user._id;
 
-  console.log(`📚 Fetching all attempts for user: ${userId}`);
+  console.log(`Fetching all attempts for user: ${userId}`);
 
   try {
     const result = await getAllUserAttempts({
@@ -142,7 +142,7 @@ export const getMyAttempts = asyncHandler(async (req, res) => {
       "Your quiz attempts fetched successfully"
     );
   } catch (error) {
-    console.error("❌ Error fetching user attempts:", error);
+    console.error("Error fetching user attempts:", error);
     return errorResponse(res, 500, error.message);
   }
 });
@@ -151,7 +151,7 @@ export const getMyAttempts = asyncHandler(async (req, res) => {
 export const getUserStats = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
-  console.log(`📊 Fetching quiz attempt statistics for user: ${userId}`);
+  console.log(`Fetching quiz attempt statistics for user: ${userId}`);
 
   try {
     const stats = await getUserQuizAttemptStats(userId);
@@ -163,7 +163,7 @@ export const getUserStats = asyncHandler(async (req, res) => {
       "User quiz statistics fetched successfully"
     );
   } catch (error) {
-    console.error("❌ Error fetching user statistics:", error);
+    console.error("Error fetching user statistics:", error);
     return errorResponse(res, 500, error.message);
   }
 });
@@ -173,7 +173,7 @@ export const getAttemptStats = asyncHandler(async (req, res) => {
   const { attemptId } = req.params;
   const userId = req.user._id;
 
-  console.log(`📊 Fetching statistics for quiz attempt: ${attemptId}`);
+  console.log(`Fetching statistics for quiz attempt: ${attemptId}`);
 
   try {
     const stats = await getQuizAttemptStats(attemptId);
@@ -185,7 +185,7 @@ export const getAttemptStats = asyncHandler(async (req, res) => {
       "Quiz attempt statistics fetched successfully"
     );
   } catch (error) {
-    console.error("❌ Error fetching attempt statistics:", error);
+    console.error("Error fetching attempt statistics:", error);
     return errorResponse(res, 500, error.message);
   }
 });

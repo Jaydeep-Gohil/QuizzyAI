@@ -65,10 +65,6 @@ The JSON structure MUST be:
       "hint": "Optional hint"
     }
   ],
-  "settings": {
-    "timeLimit": 30,
-    "timePerQuestion": 60,
-    "shuffleQuestions": true,
     "shuffleOptions": true,
     "showExplanations": true,
     "passingScore": 60,
@@ -77,6 +73,8 @@ The JSON structure MUST be:
   },
   "tags": ["tag1", "tag2", "tag3"]
 }
+
+Allowed values for studyMaterial.resources.type: article, video, documentation, book.
 
 Generate questions that:
 - Are grammatically correct and professional
@@ -98,7 +96,7 @@ export const createAIQuiz = asyncHandler(async (req, res) => {
     questionType = "mix", // "mcq", "boolean", or "mix"
   } = req.body;
 
-  console.log("📥 Request received:", {
+  console.log("Request received:", {
     prompt: prompt?.substring(0, 50) + "...",
     numberOfQuestions,
     difficulty,
@@ -161,7 +159,7 @@ Ensure the quiz is educational, engaging, and properly structured according to t
 IMPORTANT: Return ONLY the JSON object. No markdown formatting, no code blocks, no additional text.
 `;
 
-    console.log("🤖 Calling Gemini AI...");
+    console.log("Calling Gemini AI...");
 
     // Generate content using Gemini with JSON mode
     const result = await genAI.models.generateContent({
@@ -176,17 +174,17 @@ IMPORTANT: Return ONLY the JSON object. No markdown formatting, no code blocks, 
       },
     });
 
-    console.log("✅ AI Response received");
+    console.log("AI response received");
 
     // Get the generated text
     const generatedText = result.text;
 
     if (!generatedText) {
-      console.error("❌ No response text from AI");
+      console.error("No response text from AI");
       throw new Error("No response received from AI");
     }
 
-    console.log("📄 Generated text length:", generatedText.length);
+    console.log("Generated text length:", generatedText.length);
 
     // Parse JSON from response
     let quizData;
@@ -204,9 +202,9 @@ IMPORTANT: Return ONLY the JSON object. No markdown formatting, no code blocks, 
 
       // Parse JSON
       quizData = JSON.parse(cleanedText);
-      console.log("✅ JSON parsed successfully");
+      console.log("JSON parsed successfully");
     } catch (parseError) {
-      console.error("❌ JSON Parse Error:", parseError.message);
+      console.error("JSON parse error:", parseError.message);
       console.error(
         "Raw response (first 500 chars):",
         generatedText.substring(0, 500)
@@ -220,20 +218,21 @@ IMPORTANT: Return ONLY the JSON object. No markdown formatting, no code blocks, 
         if (jsonStart !== -1 && jsonEnd > jsonStart) {
           const extractedJson = generatedText.substring(jsonStart, jsonEnd);
           quizData = JSON.parse(extractedJson);
-          console.log("✅ JSON extracted and parsed successfully");
+          console.log("JSON extracted and parsed successfully");
         } else {
-          throw new Error("Could not find JSON object in response");
+          throw new Error(
+            `Failed to parse AI response as JSON: ${parseError.message}`
+          );
         }
       } catch (extractError) {
-        console.error("❌ JSON Extraction Error:", extractError.message);
         throw new Error(
-          `Failed to parse AI response as JSON: ${parseError.message}`
+          `Failed to parse AI response as JSON: ${extractError.message}`
         );
       }
     }
 
     // Validate quiz data structure
-    console.log("🔍 Validating quiz data...");
+    console.log("Validating quiz data...");
 
     if (!quizData || typeof quizData !== "object") {
       throw new Error("AI response is not a valid object");
@@ -249,7 +248,7 @@ IMPORTANT: Return ONLY the JSON object. No markdown formatting, no code blocks, 
 
     if (quizData.questions.length < numberOfQuestions) {
       console.warn(
-        `⚠️ Warning: Requested ${numberOfQuestions} questions but got ${quizData.questions.length}`
+        `Warning: Requested ${numberOfQuestions} questions but got ${quizData.questions.length}`
       );
     }
 
@@ -270,11 +269,11 @@ IMPORTANT: Return ONLY the JSON object. No markdown formatting, no code blocks, 
       }
 
       if (q.type === "mcq" && q.options.length !== 4) {
-        console.warn(`⚠️ Question ${index + 1}: MCQ should have 4 options`);
+        console.warn(`Question ${index + 1}: MCQ should have 4 options`);
       }
 
       if (q.type === "boolean" && q.options.length !== 2) {
-        console.warn(`⚠️ Question ${index + 1}: Boolean should have 2 options`);
+        console.warn(`Question ${index + 1}: Boolean should have 2 options`);
       }
 
       if (!q.correctAnswer) {
@@ -297,21 +296,20 @@ IMPORTANT: Return ONLY the JSON object. No markdown formatting, no code blocks, 
         (matchingQuestions.length / quizData.questions.length) * 100;
 
       console.log(
-        `📊 Question type match: ${matchPercentage.toFixed(1)}% (${
-          matchingQuestions.length
+        `Question type match: ${matchPercentage.toFixed(1)}% (${matchingQuestions.length
         }/${quizData.questions.length})`
       );
 
       if (matchPercentage < 80) {
         console.warn(
-          `⚠️ Warning: Only ${matchPercentage.toFixed(
+          `Warning: Only ${matchPercentage.toFixed(
             1
           )}% questions match requested type '${questionType}'`
         );
       }
     }
 
-    console.log("✅ Validation complete");
+    console.log("Validation complete");
 
     // Ensure default values for optional fields
     quizData.category = quizData.category || category || "General";
@@ -346,13 +344,13 @@ IMPORTANT: Return ONLY the JSON object. No markdown formatting, no code blocks, 
     // Get usage metadata
     const tokensUsed = result.usageMetadata
       ? {
-          promptTokens: result.usageMetadata.promptTokenCount || 0,
-          completionTokens: result.usageMetadata.candidatesTokenCount || 0,
-          totalTokens: result.usageMetadata.totalTokenCount || 0,
-        }
+        promptTokens: result.usageMetadata.promptTokenCount || 0,
+        completionTokens: result.usageMetadata.candidatesTokenCount || 0,
+        totalTokens: result.usageMetadata.totalTokenCount || 0,
+      }
       : null;
 
-    console.log("📊 Token usage:", tokensUsed);
+    console.log("Token usage:", tokensUsed);
 
     // Prepare quiz data for database
     const quizToCreate = {
@@ -386,12 +384,12 @@ IMPORTANT: Return ONLY the JSON object. No markdown formatting, no code blocks, 
       publishedAt: new Date(),
     };
 
-    console.log("💾 Saving quiz to database...");
+    console.log("Saving quiz to database...");
 
     // Create quiz in database
     const quiz = await createQuiz(quizToCreate);
 
-    console.log("✅ Quiz created successfully:", quiz._id);
+    console.log("Quiz created successfully:", quiz._id);
 
     return successResponse(
       res,
@@ -400,7 +398,7 @@ IMPORTANT: Return ONLY the JSON object. No markdown formatting, no code blocks, 
       "AI-generated quiz created successfully"
     );
   } catch (error) {
-    console.error("❌ Error:", error.message);
+    console.error("Error:", error.message);
     console.error("Stack:", error.stack);
 
     // Return detailed error for debugging
@@ -411,9 +409,9 @@ IMPORTANT: Return ONLY the JSON object. No markdown formatting, no code blocks, 
       details:
         process.env.NODE_ENV === "development"
           ? {
-              stack: error.stack,
-              timestamp: new Date().toISOString(),
-            }
+            stack: error.stack,
+            timestamp: new Date().toISOString(),
+          }
           : undefined,
     });
   }

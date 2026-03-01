@@ -103,7 +103,7 @@ export const getQuizzes = asyncHandler(async (req, res) => {
       "Random quizzes fetched successfully"
     );
   } catch (error) {
-    console.error("❌ Error fetching random quizzes:", error);
+    console.error("Error fetching random quizzes:", error);
     return errorResponse(res, 500, error.message || "Internal server error");
   }
 });
@@ -112,7 +112,7 @@ export const getQuizzes = asyncHandler(async (req, res) => {
 export const getQuizStats = asyncHandler(async (req, res) => {
   const { quizId } = req.params;
 
-  console.log(`📊 Fetching statistics for quiz: ${quizId}`);
+  console.log(`Fetching statistics for quiz: ${quizId}`);
 
   try {
     const stats = await getQuizStatistics(quizId);
@@ -124,7 +124,7 @@ export const getQuizStats = asyncHandler(async (req, res) => {
       "Quiz statistics fetched successfully"
     );
   } catch (error) {
-    console.error("❌ Error fetching quiz statistics:", error);
+    console.error("Error fetching quiz statistics:", error);
     return errorResponse(res, 500, error.message);
   }
 });
@@ -156,7 +156,7 @@ export const getMannualQuizess = asyncHandler(async (req, res) => {
       "Manual quizzes listed successfully"
     );
   } catch (error) {
-    console.error("❌ Error fetching manual quizzes:", error);
+    console.error("Error fetching manual quizzes:", error);
     return errorResponse(
       res,
       500,

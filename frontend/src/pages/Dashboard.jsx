@@ -211,7 +211,7 @@ const Dashboard = () => {
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {studentData?.data?.latestQuizzes.map((quiz, index) => (
+            {studentData?.data?.latestQuizzes?.map((quiz, index) => (
               <div
                 key={quiz._id || quiz.id || quiz.title || index}
                 className="bg-gray-900 rounded-lg p-4 border border-gray-700 hover:border-purple-500 transition-colors cursor-pointer"

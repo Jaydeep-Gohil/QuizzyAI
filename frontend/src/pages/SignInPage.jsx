@@ -5,7 +5,7 @@ import { useApp } from '../context/AppContext';
 import { login } from '../services/auth.service';
 
 const SignInPage = () => {
-  const { setIsAuthenticated } = useApp();
+  const { setIsAuthenticated, bootstrap } = useApp();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,6 +19,7 @@ const SignInPage = () => {
     try {
       await login({ email, password });
       setIsAuthenticated(true);
+      await bootstrap();
       navigate('/dashboard');
     } catch (err) {
       setError(err?.response?.data?.message || 'Login failed');

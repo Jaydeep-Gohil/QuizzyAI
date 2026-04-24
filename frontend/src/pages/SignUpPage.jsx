@@ -5,7 +5,7 @@ import { useApp } from '../context/AppContext';
 import { register } from '../services/auth.service';
 
 const SignUpPage = () => {
-  const { setIsAuthenticated } = useApp();
+  const { setIsAuthenticated, bootstrap } = useApp();
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -22,6 +22,7 @@ const SignUpPage = () => {
       await register({ name, email, password, role });
       // backend sets cookie and returns message; redirect to dashboard
       setIsAuthenticated(true);
+      await bootstrap();
       navigate('/dashboard');
     } catch (err) {
       setError(err?.response?.data?.message || 'Registration failed');
